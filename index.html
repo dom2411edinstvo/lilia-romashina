@@ -43,1284 +43,223 @@
   </script>
 
   <style>
-    /* ===== CSS RESET & BASE ===== */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      font-size: 16px;
-    }
-
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: #faf9f7;
-      color: #2d2a3e;
-      line-height: 1.7;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    h1, h2, h3, h4 {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 600;
-      line-height: 1.25;
-      color: #1e1b30;
-    }
-
-    a {
-      color: #9b6b9e;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    a:hover {
-      color: #7a4f7d;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'Montserrat', sans-serif; background-color: #faf9f7; color: #2d2a3e; line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height: 1.25; color: #1e1b30; }
+    a { color: #9b6b9e; text-decoration: none; transition: color 0.3s ease; }
+    a:hover { color: #7a4f7d; }
+    img { max-width: 100%; display: block; }
     ul { list-style: none; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
 
-    .container {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes pulseGift { 0%, 100% { box-shadow: 0 0 0 0 rgba(155,107,158,0.4); } 50% { box-shadow: 0 0 0 16px rgba(155,107,158,0); } }
 
-    /* ===== ANIMATIONS ===== */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    @keyframes pulseGift {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(155,107,158,0.4); }
-      50% { box-shadow: 0 0 0 16px rgba(155,107,158,0); }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ===== HEADER / NAV ===== */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-      padding: 14px 0;
-      transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.4s ease;
-    }
-
-    header.scrolled {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 2px 30px rgba(0,0,0,0.08);
-      padding: 8px 0;
-    }
-
-    header .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #9b6b9e;
-      letter-spacing: 1px;
-    }
-
-    .logo span {
-      color: #9b6b9e;
-      font-weight: 700;
-    }
-
-    nav ul {
-      display: flex;
-      gap: 24px;
-    }
-
-    nav a {
-      color: #2d2a3e;
-      font-size: 0.8rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      position: relative;
-      padding-bottom: 4px;
-    }
-
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 1.5px;
-      background: #9b6b9e;
-      transition: width 0.3s ease;
-    }
-
+    header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 14px 0; transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.4s ease; }
+    header.scrolled { background: rgba(255,255,255,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 2px 30px rgba(0,0,0,0.08); padding: 8px 0; }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; color: #9b6b9e; letter-spacing: 1px; }
+    .logo span { color: #9b6b9e; font-weight: 700; }
+    nav ul { display: flex; gap: 24px; }
+    nav a { color: #2d2a3e; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; position: relative; padding-bottom: 4px; }
+    nav a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px; background: #9b6b9e; transition: width 0.3s ease; }
     nav a:hover { color: #9b6b9e; }
     nav a:hover::after { width: 100%; }
 
-    /* Burger */
-    .burger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      z-index: 1001;
-      background: none;
-      border: none;
-      padding: 5px;
-    }
-
-    .burger span {
-      display: block;
-      width: 26px;
-      height: 2px;
-      background: #2d2a3e;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-
+    .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; background: none; border: none; padding: 5px; }
+    .burger span { display: block; width: 26px; height: 2px; background: #2d2a3e; border-radius: 2px; transition: all 0.3s ease; }
     .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .burger.active span:nth-child(2) { opacity: 0; }
     .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* ===== HERO SECTION ===== */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 120px 0 80px;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(160deg, #faf9f7 0%, #f3eef8 40%, #fdf6f0 70%, #f0eafa 100%);
-    }
-
-    #hero::before {
-      content: '';
-      position: absolute;
-      top: -20%;
-      right: -10%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(155,107,158,0.08) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    #hero::after {
-      content: '';
-      position: absolute;
-      bottom: -20%;
-      left: -10%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .hero-inner {
-      display: flex;
-      align-items: center;
-      gap: 60px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-photo {
-      flex: 0 0 380px;
-      height: 500px;
-      border-radius: 20px;
-      overflow: hidden;
-      position: relative;
-      border: 1px solid rgba(155,107,158,0.15);
-      box-shadow: 0 20px 60px rgba(155,107,158,0.12);
-      animation: fadeIn 1s ease 0.2s both;
-    }
-
-    .hero-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    #hero { min-height: 100vh; display: flex; align-items: center; padding: 120px 0 80px; position: relative; overflow: hidden; background: linear-gradient(160deg, #faf9f7 0%, #f3eef8 40%, #fdf6f0 70%, #f0eafa 100%); }
+    #hero::before { content: ''; position: absolute; top: -20%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(155,107,158,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+    #hero::after { content: ''; position: absolute; bottom: -20%; left: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+    .hero-inner { display: flex; align-items: center; gap: 60px; position: relative; z-index: 1; }
+    .hero-photo { flex: 0 0 380px; height: 500px; border-radius: 20px; overflow: hidden; position: relative; border: 1px solid rgba(155,107,158,0.15); box-shadow: 0 20px 60px rgba(155,107,158,0.12); animation: fadeIn 1s ease 0.2s both; }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
     .hero-content { flex: 1; }
-
-    .hero-welcome {
-      font-size: 1.05rem;
-      font-weight: 400;
-      color: #5a4a6b;
-      margin-bottom: 20px;
-      animation: fadeInUp 0.8s ease 0.4s both;
-      line-height: 1.7;
-    }
-
-    .hero-content h1 {
-      font-size: 3rem;
-      color: #1e1b30;
-      margin-bottom: 20px;
-      animation: fadeInUp 0.8s ease 0.6s both;
-    }
-
-    .hero-content h1 em {
-      font-style: normal;
-      background: linear-gradient(90deg, #9b6b9e, #c49bc7, #9b6b9e);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: shimmer 4s linear infinite;
-    }
-
-    .hero-subtitle {
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: #4a4260;
-      margin-bottom: 36px;
-      max-width: 540px;
-      animation: fadeInUp 0.8s ease 0.8s both;
-      line-height: 1.7;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 16px 40px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.4s ease;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #9b6b9e, #b388b6);
-      color: #fff;
-      animation: fadeInUp 0.8s ease 1s both;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.35);
-      color: #fff;
-    }
-
+    .hero-welcome { font-size: 1.05rem; font-weight: 400; color: #5a4a6b; margin-bottom: 20px; animation: fadeInUp 0.8s ease 0.4s both; line-height: 1.7; }
+    .hero-content h1 { font-size: 3rem; color: #1e1b30; margin-bottom: 20px; animation: fadeInUp 0.8s ease 0.6s both; }
+    .hero-content h1 em { font-style: normal; background: linear-gradient(90deg, #9b6b9e, #c49bc7, #9b6b9e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 4s linear infinite; }
+    .hero-subtitle { font-size: 1.1rem; font-weight: 400; color: #4a4260; margin-bottom: 36px; max-width: 540px; animation: fadeInUp 0.8s ease 0.8s both; line-height: 1.7; }
+    .btn { display: inline-block; padding: 16px 40px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; border: none; border-radius: 50px; cursor: pointer; transition: all 0.4s ease; }
+    .btn-primary { background: linear-gradient(135deg, #9b6b9e, #b388b6); color: #fff; animation: fadeInUp 0.8s ease 1s both; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(155,107,158,0.35); color: #fff; }
     .btn-primary:active { transform: translateY(0); }
 
-    /* ===== SECTION STYLES ===== */
-    section {
-      padding: 100px 0;
-      position: relative;
-    }
-
-    .section-label {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: #9b6b9e;
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      font-size: 2.4rem;
-      margin-bottom: 20px;
-      color: #1e1b30;
-    }
-
-    .section-subtitle {
-      font-size: 1.05rem;
-      font-weight: 400;
-      color: #4a4260;
-      max-width: 620px;
-      margin-bottom: 50px;
-      line-height: 1.7;
-    }
-
+    section { padding: 100px 0; position: relative; }
+    .section-label { display: inline-block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 3px; color: #9b6b9e; margin-bottom: 12px; }
+    .section-title { font-size: 2.4rem; margin-bottom: 20px; color: #1e1b30; }
+    .section-subtitle { font-size: 1.05rem; font-weight: 400; color: #4a4260; max-width: 620px; margin-bottom: 50px; line-height: 1.7; }
     .section-center { text-align: center; }
-
-    .section-center .section-subtitle {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .divider {
-      width: 60px;
-      height: 2px;
-      background: linear-gradient(90deg, #9b6b9e, transparent);
-      margin: 24px 0;
-    }
-
+    .section-center .section-subtitle { margin-left: auto; margin-right: auto; }
+    .divider { width: 60px; height: 2px; background: linear-gradient(90deg, #9b6b9e, transparent); margin: 24px 0; }
     .divider-center { margin: 24px auto; }
 
-    /* ===== ABOUT SECTION ===== */
-    #about {
-      background: linear-gradient(180deg, #faf9f7 0%, #f5f0fa 50%, #faf9f7 100%);
-    }
+    #about { background: linear-gradient(180deg, #faf9f7 0%, #f5f0fa 50%, #faf9f7 100%); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .about-text p { margin-bottom: 20px; font-size: 1rem; font-weight: 400; color: #3d3654; line-height: 1.8; }
+    .about-text strong { color: #9b6b9e; font-weight: 600; }
+    .about-highlight { background: linear-gradient(135deg, rgba(155,107,158,0.08), rgba(212,175,55,0.05)); border-left: 3px solid #9b6b9e; padding: 24px 28px; border-radius: 0 12px 12px 0; margin: 28px 0; }
+    .about-highlight p { font-style: italic; font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #2d2a3e !important; }
+    .about-masters { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+    .master-tag { display: inline-block; padding: 6px 16px; background: rgba(155,107,158,0.1); border: 1px solid rgba(155,107,158,0.2); border-radius: 20px; font-size: 0.85rem; color: #7a4f7d; font-weight: 500; }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .stat-card { background: #fff; border: 1px solid rgba(155,107,158,0.1); border-radius: 16px; padding: 28px 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(155,107,158,0.12); }
+    .stat-number { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; color: #9b6b9e; display: block; }
+    .stat-text { font-size: 0.85rem; color: #6b6380; margin-top: 4px; font-weight: 400; }
 
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-    }
-
-    .about-text p {
-      margin-bottom: 20px;
-      font-size: 1rem;
-      font-weight: 400;
-      color: #3d3654;
-      line-height: 1.8;
-    }
-
-    .about-text strong {
-      color: #9b6b9e;
-      font-weight: 600;
-    }
-
-    .about-highlight {
-      background: linear-gradient(135deg, rgba(155,107,158,0.08), rgba(212,175,55,0.05));
-      border-left: 3px solid #9b6b9e;
-      padding: 24px 28px;
-      border-radius: 0 12px 12px 0;
-      margin: 28px 0;
-    }
-
-    .about-highlight p {
-      font-style: italic;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #2d2a3e !important;
-    }
-
-    .about-masters {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .master-tag {
-      display: inline-block;
-      padding: 6px 16px;
-      background: rgba(155,107,158,0.1);
-      border: 1px solid rgba(155,107,158,0.2);
-      border-radius: 20px;
-      font-size: 0.85rem;
-      color: #7a4f7d;
-      font-weight: 500;
-    }
-
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .stat-card {
-      background: #fff;
-      border: 1px solid rgba(155,107,158,0.1);
-      border-radius: 16px;
-      padding: 28px 24px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.12);
-    }
-
-    .stat-number {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: #9b6b9e;
-      display: block;
-    }
-
-    .stat-text {
-      font-size: 0.85rem;
-      color: #6b6380;
-      margin-top: 4px;
-      font-weight: 400;
-    }
-
-    /* ===== CERTIFICATES SECTION ===== */
-    #certificates {
-      background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 50%, #faf9f7 100%);
-      padding: 100px 0;
-    }
-
-    .certs-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 24px;
-    }
-
-    .cert-card {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.06);
-      cursor: pointer;
-      transition: all 0.4s ease;
-      position: relative;
-      background: #fff;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-    }
-
-    .cert-card:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 12px 40px rgba(155,107,158,0.15);
-    }
-
-    .cert-card img {
-      width: 100%;
-      height: 280px;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
+    #certificates { background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 50%, #faf9f7 100%); padding: 100px 0; }
+    .certs-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; }
+    .cert-card { border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); cursor: pointer; transition: all 0.4s ease; position: relative; background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
+    .cert-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 12px 40px rgba(155,107,158,0.15); }
+    .cert-card img { width: 100%; height: 280px; object-fit: cover; transition: transform 0.4s ease; }
     .cert-card:hover img { transform: scale(1.05); }
-
-    .cert-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
+    .cert-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
     .cert-card:hover .cert-overlay { opacity: 1; }
+    .cert-overlay span { font-size: 2rem; color: #9b6b9e; }
 
-    .cert-overlay span {
-      font-size: 2rem;
-      color: #9b6b9e;
-    }
-
-    /* ===== GIFT / MONEY CODE ===== */
-    #gift {
-      padding: 80px 0;
-      background: linear-gradient(135deg, #f3eef8 0%, #fdf6f0 50%, #f0eafa 100%);
-      position: relative;
-      overflow: hidden;
-    }
-
-    #gift::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .gift-inner {
-      display: flex;
-      align-items: center;
-      gap: 50px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .gift-icon-wrap {
-      flex: 0 0 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #9b6b9e, #c49bc7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.5rem;
-      animation: pulseGift 2.5s ease-in-out infinite;
-      box-shadow: 0 8px 30px rgba(155,107,158,0.3);
-    }
-
+    #gift { padding: 80px 0; background: linear-gradient(135deg, #f3eef8 0%, #fdf6f0 50%, #f0eafa 100%); position: relative; overflow: hidden; }
+    #gift::before { content: ''; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+    .gift-inner { display: flex; align-items: center; gap: 50px; position: relative; z-index: 1; }
+    .gift-icon-wrap { flex: 0 0 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, #9b6b9e, #c49bc7); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; animation: pulseGift 2.5s ease-in-out infinite; box-shadow: 0 8px 30px rgba(155,107,158,0.3); }
     .gift-content { flex: 1; }
+    .gift-content h2 { font-size: 2.2rem; margin-bottom: 12px; color: #1e1b30; }
+    .gift-content h2 span { color: #9b6b9e; }
+    .gift-content p { font-size: 1.05rem; color: #4a4260; margin-bottom: 24px; line-height: 1.7; font-weight: 400; }
+    .gift-content .btn-gift { display: inline-block; padding: 16px 40px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; border: none; border-radius: 50px; cursor: pointer; background: linear-gradient(135deg, #d4af37, #e8c84a); color: #fff; transition: all 0.4s ease; text-decoration: none; }
+    .gift-content .btn-gift:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,0.35); color: #fff; }
 
-    .gift-content h2 {
-      font-size: 2.2rem;
-      margin-bottom: 12px;
-      color: #1e1b30;
-    }
-
-    .gift-content h2 span {
-      color: #9b6b9e;
-    }
-
-    .gift-content p {
-      font-size: 1.05rem;
-      color: #4a4260;
-      margin-bottom: 24px;
-      line-height: 1.7;
-      font-weight: 400;
-    }
-
-    .gift-content .btn-gift {
-      display: inline-block;
-      padding: 16px 40px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      background: linear-gradient(135deg, #d4af37, #e8c84a);
-      color: #fff;
-      transition: all 0.4s ease;
-      text-decoration: none;
-    }
-
-    .gift-content .btn-gift:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(212,175,55,0.35);
-      color: #fff;
-    }
-
-    /* ===== TARGET AUDIENCE ===== */
-    #audience {
-      background: linear-gradient(180deg, #faf9f7 0%, #f8f5fc 50%, #faf9f7 100%);
-    }
-
-    .audience-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .audience-card {
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 20px;
-      padding: 36px 28px;
-      transition: all 0.4s ease;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    }
-
-    .audience-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, #9b6b9e, #d4af37);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .audience-card:hover {
-      background: #fff;
-      box-shadow: 0 12px 40px rgba(155,107,158,0.1);
-      transform: translateY(-6px);
-    }
-
+    #audience { background: linear-gradient(180deg, #faf9f7 0%, #f8f5fc 50%, #faf9f7 100%); }
+    .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .audience-card { background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 20px; padding: 36px 28px; transition: all 0.4s ease; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
+    .audience-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #9b6b9e, #d4af37); opacity: 0; transition: opacity 0.4s ease; }
+    .audience-card:hover { background: #fff; box-shadow: 0 12px 40px rgba(155,107,158,0.1); transform: translateY(-6px); }
     .audience-card:hover::before { opacity: 1; }
+    .audience-icon { font-size: 2.2rem; margin-bottom: 16px; display: block; }
+    .audience-card h3 { font-size: 1.3rem; margin-bottom: 10px; color: #1e1b30; }
+    .audience-card p { font-size: 0.92rem; font-weight: 400; color: #4a4260; line-height: 1.7; }
 
-    .audience-icon {
-      font-size: 2.2rem;
-      margin-bottom: 16px;
-      display: block;
-    }
+    #services { background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 50%, #faf9f7 100%); }
+    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .service-item { display: flex; gap: 20px; align-items: flex-start; padding: 32px 28px; background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
+    .service-item:hover { box-shadow: 0 8px 30px rgba(155,107,158,0.1); transform: translateY(-3px); }
+    .service-icon { flex: 0 0 50px; height: 50px; background: linear-gradient(135deg, rgba(155,107,158,0.12), rgba(212,175,55,0.1)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .service-item h3 { font-size: 1.15rem; margin-bottom: 6px; color: #1e1b30; }
+    .service-item p { font-size: 0.9rem; font-weight: 400; color: #4a4260; line-height: 1.6; }
 
-    .audience-card h3 {
-      font-size: 1.3rem;
-      margin-bottom: 10px;
-      color: #1e1b30;
-    }
+    #results { background: linear-gradient(180deg, #faf9f7 0%, #f3eef8 50%, #faf9f7 100%); }
+    .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .result-card { background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 20px; padding: 36px 28px; text-align: center; transition: all 0.4s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
+    .result-card:hover { box-shadow: 0 12px 40px rgba(155,107,158,0.1); transform: translateY(-4px); }
+    .result-num { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #9b6b9e, #b388b6); color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
+    .result-card h3 { font-size: 1.2rem; margin-bottom: 10px; color: #1e1b30; }
+    .result-card p { font-size: 0.9rem; font-weight: 400; color: #4a4260; line-height: 1.6; }
 
-    .audience-card p {
-      font-size: 0.92rem;
-      font-weight: 400;
-      color: #4a4260;
-      line-height: 1.7;
-    }
-
-    /* ===== SERVICES ===== */
-    #services {
-      background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 50%, #faf9f7 100%);
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-    }
-
-    .service-item {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      padding: 32px 28px;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 16px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    }
-
-    .service-item:hover {
-      box-shadow: 0 8px 30px rgba(155,107,158,0.1);
-      transform: translateY(-3px);
-    }
-
-    .service-icon {
-      flex: 0 0 50px;
-      height: 50px;
-      background: linear-gradient(135deg, rgba(155,107,158,0.12), rgba(212,175,55,0.1));
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-    }
-
-    .service-item h3 {
-      font-size: 1.15rem;
-      margin-bottom: 6px;
-      color: #1e1b30;
-    }
-
-    .service-item p {
-      font-size: 0.9rem;
-      font-weight: 400;
-      color: #4a4260;
-      line-height: 1.6;
-    }
-
-    /* ===== RESULTS ===== */
-    #results {
-      background: linear-gradient(180deg, #faf9f7 0%, #f3eef8 50%, #faf9f7 100%);
-    }
-
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .result-card {
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 20px;
-      padding: 36px 28px;
-      text-align: center;
-      transition: all 0.4s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    }
-
-    .result-card:hover {
-      box-shadow: 0 12px 40px rgba(155,107,158,0.1);
-      transform: translateY(-4px);
-    }
-
-    .result-num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #9b6b9e, #b388b6);
-      color: #fff;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .result-card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      color: #1e1b30;
-    }
-
-    .result-card p {
-      font-size: 0.9rem;
-      font-weight: 400;
-      color: #4a4260;
-      line-height: 1.6;
-    }
-
-    /* ===== REVIEWS SECTION ===== */
-    #reviews {
-      background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 40%, #f3eef8 100%);
-      padding: 100px 0;
-    }
-
-    .reviews-intro {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      margin-bottom: 60px;
-    }
-
-    .reviews-intro-photo {
-      flex: 0 0 200px;
-      height: 200px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 3px solid rgba(155,107,158,0.2);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.1);
-    }
-
-    .reviews-intro-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    #reviews { background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 40%, #f3eef8 100%); padding: 100px 0; }
+    .reviews-intro { display: flex; align-items: center; gap: 40px; margin-bottom: 60px; }
+    .reviews-intro-photo { flex: 0 0 200px; height: 200px; border-radius: 50%; overflow: hidden; border: 3px solid rgba(155,107,158,0.2); box-shadow: 0 8px 30px rgba(155,107,158,0.1); }
+    .reviews-intro-photo img { width: 100%; height: 100%; object-fit: cover; }
     .reviews-intro-text { flex: 1; }
+    .reviews-sub-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #5a4a6b; margin-top: 16px; font-weight: 400; }
 
-    .reviews-sub-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      color: #5a4a6b;
-      margin-top: 16px;
-      font-weight: 400;
-    }
-
-    /* Video Grid */
-    .video-section-label {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #9b6b9e;
-      margin-bottom: 28px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .videos-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 70px;
-    }
-
-    .video-card {
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.06);
-      aspect-ratio: 16/9;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-    }
-
-    .video-card:hover {
-      box-shadow: 0 8px 30px rgba(155,107,158,0.12);
-      transform: translateY(-4px);
-    }
-
-    .video-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 12px;
-      background: linear-gradient(135deg, #f3eef8, #fdf6f0);
-    }
-
-    .play-btn {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(155,107,158,0.15);
-      border: 2px solid rgba(155,107,158,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-    }
-
-    .video-card:hover .play-btn {
-      background: rgba(155,107,158,0.3);
-      border-color: #9b6b9e;
-      transform: scale(1.1);
-    }
-
-    .play-btn svg {
-      width: 24px;
-      height: 24px;
-      fill: #9b6b9e;
-      margin-left: 3px;
-    }
-
-    .video-label {
-      font-size: 0.8rem;
-      color: #8a7fa0;
-      letter-spacing: 1px;
-    }
-
-    .video-card iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
+    .video-section-label { font-size: 1.1rem; font-weight: 600; color: #9b6b9e; margin-bottom: 28px; text-transform: uppercase; letter-spacing: 2px; }
+    .videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 70px; }
+    .video-card { border-radius: 16px; overflow: hidden; position: relative; background: #fff; border: 1px solid rgba(0,0,0,0.06); aspect-ratio: 16/9; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
+    .video-card:hover { box-shadow: 0 8px 30px rgba(155,107,158,0.12); transform: translateY(-4px); }
+    .video-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; background: linear-gradient(135deg, #f3eef8, #fdf6f0); }
+    .play-btn { width: 64px; height: 64px; border-radius: 50%; background: rgba(155,107,158,0.15); border: 2px solid rgba(155,107,158,0.4); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+    .video-card:hover .play-btn { background: rgba(155,107,158,0.3); border-color: #9b6b9e; transform: scale(1.1); }
+    .play-btn svg { width: 24px; height: 24px; fill: #9b6b9e; margin-left: 3px; }
+    .video-label { font-size: 0.8rem; color: #8a7fa0; letter-spacing: 1px; }
+    .video-card iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
 
     .video-card.playing .video-placeholder { display: none; }
 
-    /* Review Images Grid */
-    .review-images-label {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #9b6b9e;
-      margin-bottom: 28px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .review-images-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 16px;
-    }
-
-    .review-img-card {
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.06);
-      cursor: pointer;
-      transition: all 0.4s ease;
-      position: relative;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    }
-
-    .review-img-card:hover {
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.15);
-    }
-
-    .review-img-card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
-    .review-img-card:hover img { transform: scale(1.05); }
-
-    .review-img-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .review-img-card:hover .review-img-overlay { opacity: 1; }
-
-    .review-img-overlay span {
-      font-size: 1.8rem;
-      color: #9b6b9e;
-    }
-
-    /* ===== LIGHTBOX ===== */
-    .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(10px);
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-      cursor: zoom-out;
-    }
-
-    .lightbox.open {
-      display: flex;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .lightbox img {
-      max-width: 90vw;
-      max-height: 90vh;
-      object-fit: contain;
-      border-radius: 8px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      cursor: default;
-    }
-
-    .lightbox-close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      width: 44px;
-      height: 44px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.5rem;
-      color: #fff;
-      transition: all 0.3s ease;
-      z-index: 10000;
-    }
-
-    .lightbox-close:hover {
-      background: rgba(155,107,158,0.5);
-    }
-
-    .lightbox-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 48px;
-      height: 48px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.3rem;
-      color: #fff;
-      transition: all 0.3s ease;
-      z-index: 10000;
-    }
-
-    .lightbox-nav:hover {
-      background: rgba(155,107,158,0.5);
-    }
-
-    .lightbox-prev { left: 20px; }
-    .lightbox-next { right: 20px; }
-
-    /* ===== CTA FORM SECTION ===== */
-    #signup {
-      padding: 100px 0;
-      background: linear-gradient(135deg, #f3eef8 0%, #fdf6f0 50%, #f0eafa 100%);
-      position: relative;
-    }
-
-    #signup::before {
+    .video-card.playing::after {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(155,107,158,0.2), transparent);
+      right: 0;
+      height: 46px;
+      background: linear-gradient(180deg, #1a1a1a 70%, transparent 100%);
+      z-index: 10;
+      pointer-events: none;
     }
 
-    .signup-inner {
-      display: flex;
-      gap: 60px;
-      align-items: center;
-    }
+    .review-images-label { font-size: 1.1rem; font-weight: 600; color: #9b6b9e; margin-bottom: 28px; text-transform: uppercase; letter-spacing: 2px; }
+    .review-images-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .review-img-card { border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); cursor: pointer; transition: all 0.4s ease; position: relative; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    .review-img-card:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 30px rgba(155,107,158,0.15); }
+    .review-img-card img { width: 100%; height: 220px; object-fit: cover; transition: transform 0.4s ease; }
+    .review-img-card:hover img { transform: scale(1.05); }
+    .review-img-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+    .review-img-card:hover .review-img-overlay { opacity: 1; }
+    .review-img-overlay span { font-size: 1.8rem; color: #9b6b9e; }
 
-    .signup-photo {
-      flex: 0 0 340px;
-      height: 440px;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid rgba(155,107,158,0.15);
-      box-shadow: 0 16px 50px rgba(155,107,158,0.12);
-    }
+    .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+    .lightbox.open { display: flex; animation: fadeIn 0.3s ease; }
+    .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); cursor: default; }
+    .lightbox-close { position: absolute; top: 20px; right: 30px; width: 44px; height: 44px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.5rem; color: #fff; transition: all 0.3s ease; z-index: 10000; }
+    .lightbox-close:hover { background: rgba(155,107,158,0.5); }
+    .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; color: #fff; transition: all 0.3s ease; z-index: 10000; }
+    .lightbox-nav:hover { background: rgba(155,107,158,0.5); }
+    .lightbox-prev { left: 20px; }
+    .lightbox-next { right: 20px; }
 
-    .signup-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    #signup { padding: 100px 0; background: linear-gradient(135deg, #f3eef8 0%, #fdf6f0 50%, #f0eafa 100%); position: relative; }
+    #signup::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(155,107,158,0.2), transparent); }
+    .signup-inner { display: flex; gap: 60px; align-items: center; }
+    .signup-photo { flex: 0 0 340px; height: 440px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(155,107,158,0.15); box-shadow: 0 16px 50px rgba(155,107,158,0.12); }
+    .signup-photo img { width: 100%; height: 100%; object-fit: cover; }
     .signup-form-wrap { flex: 1; }
-
-    .signup-form-wrap h2 {
-      font-size: 2.2rem;
-      margin-bottom: 10px;
-    }
-
-    .signup-form-wrap .form-sub {
-      font-size: 1rem;
-      font-weight: 400;
-      color: #4a4260;
-      margin-bottom: 32px;
-      line-height: 1.7;
-    }
-
+    .signup-form-wrap h2 { font-size: 2.2rem; margin-bottom: 10px; }
+    .signup-form-wrap .form-sub { font-size: 1rem; font-weight: 400; color: #4a4260; margin-bottom: 32px; line-height: 1.7; }
     .form-group { margin-bottom: 20px; }
-
-    .form-group label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 8px;
-      color: #6b6380;
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 14px 20px;
-      background: #fff;
-      border: 1px solid rgba(155,107,158,0.2);
-      border-radius: 12px;
-      color: #2d2a3e;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      outline: none;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: #9b6b9e;
-      box-shadow: 0 0 0 3px rgba(155,107,158,0.1);
-    }
-
-    .form-group input::placeholder,
-    .form-group textarea::placeholder {
-      color: #a8a0b8;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .char-counter {
-      font-size: 0.75rem;
-      color: #a8a0b8;
-      text-align: right;
-      margin-top: 4px;
-    }
-
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; color: #6b6380; }
+    .form-group input, .form-group textarea { width: 100%; padding: 14px 20px; background: #fff; border: 1px solid rgba(155,107,158,0.2); border-radius: 12px; color: #2d2a3e; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; transition: border-color 0.3s ease, box-shadow 0.3s ease; outline: none; }
+    .form-group input:focus, .form-group textarea:focus { border-color: #9b6b9e; box-shadow: 0 0 0 3px rgba(155,107,158,0.1); }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: #a8a0b8; }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .char-counter { font-size: 0.75rem; color: #a8a0b8; text-align: right; margin-top: 4px; }
     .char-counter.warn { color: #d4a437; }
     .char-counter.limit { color: #c0392b; }
+    .btn-submit { width: 100%; padding: 16px 40px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; border: none; border-radius: 50px; cursor: pointer; background: linear-gradient(135deg, #9b6b9e, #b388b6); color: #fff; transition: all 0.4s ease; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(155,107,158,0.35); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+    .form-success { display: none; text-align: center; padding: 40px 20px; }
+    .form-success.show { display: block; animation: fadeInUp 0.6s ease; }
+    .form-success .success-icon { font-size: 3rem; margin-bottom: 16px; display: block; }
+    .form-success h3 { font-size: 1.6rem; margin-bottom: 10px; color: #9b6b9e; }
+    .form-success p { font-size: 1rem; color: #4a4260; }
+    .form-error { color: #c0392b; font-size: 0.82rem; margin-top: 4px; display: none; }
 
-    .btn-submit {
-      width: 100%;
-      padding: 16px 40px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      background: linear-gradient(135deg, #9b6b9e, #b388b6);
-      color: #fff;
-      transition: all 0.4s ease;
-    }
-
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.35);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .form-success {
-      display: none;
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .form-success.show {
-      display: block;
-      animation: fadeInUp 0.6s ease;
-    }
-
-    .form-success .success-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      display: block;
-    }
-
-    .form-success h3 {
-      font-size: 1.6rem;
-      margin-bottom: 10px;
-      color: #9b6b9e;
-    }
-
-    .form-success p {
-      font-size: 1rem;
-      color: #4a4260;
-    }
-
-    .form-error {
-      color: #c0392b;
-      font-size: 0.82rem;
-      margin-top: 4px;
-      display: none;
-    }
-
-    /* ===== CONTACTS ===== */
-    #contacts {
-      background: #faf9f7;
-      padding: 80px 0;
-    }
-
-    .contacts-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-    }
-
-    .contact-card {
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 16px;
-      padding: 32px 24px;
-      text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    }
-
-    .contact-card:hover {
-      box-shadow: 0 8px 30px rgba(155,107,158,0.1);
-      transform: translateY(-4px);
-    }
-
-    .contact-icon {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .contact-icon svg {
-      width: 36px;
-      height: 36px;
-    }
-
-    .contact-icon-emoji {
-      font-size: 2rem;
-      margin-bottom: 14px;
-      display: block;
-      text-align: center;
-    }
-
-    .contact-card h3 {
-      font-size: 1rem;
-      margin-bottom: 8px;
-      color: #1e1b30;
-    }
-
+    #contacts { background: #faf9f7; padding: 80px 0; }
+    .contacts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .contact-card { background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; padding: 32px 24px; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
+    .contact-card:hover { box-shadow: 0 8px 30px rgba(155,107,158,0.1); transform: translateY(-4px); }
+    .contact-icon { width: 48px; height: 48px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; }
+    .contact-icon svg { width: 36px; height: 36px; }
+    .contact-icon-emoji { font-size: 2rem; margin-bottom: 14px; display: block; text-align: center; }
+    .contact-card h3 { font-size: 1rem; margin-bottom: 8px; color: #1e1b30; }
     .contact-card a { font-size: 0.92rem; font-weight: 500; }
+    .contact-card p { font-size: 0.85rem; color: #8a7fa0; margin-top: 4px; }
 
-    .contact-card p {
-      font-size: 0.85rem;
-      color: #8a7fa0;
-      margin-top: 4px;
-    }
+    footer { background: #f3eef8; border-top: 1px solid rgba(155,107,158,0.1); padding: 30px 0; text-align: center; }
+    footer p { font-size: 0.82rem; color: #8a7fa0; }
 
-    /* ===== FOOTER ===== */
-    footer {
-      background: #f3eef8;
-      border-top: 1px solid rgba(155,107,158,0.1);
-      padding: 30px 0;
-      text-align: center;
-    }
-
-    footer p {
-      font-size: 0.82rem;
-      color: #8a7fa0;
-    }
-
-    /* ===== DECORATIVE DOTS ===== */
-    .stars {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .star {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: rgba(155,107,158,0.2);
-      border-radius: 50%;
-      animation: float 6s ease-in-out infinite;
-    }
-
+    .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+    .star { position: absolute; width: 4px; height: 4px; background: rgba(155,107,158,0.2); border-radius: 50%; animation: float 6s ease-in-out infinite; }
     .star:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
     .star:nth-child(2) { top: 30%; left: 85%; animation-delay: 1s; }
     .star:nth-child(3) { top: 60%; left: 20%; animation-delay: 2s; }
@@ -1328,40 +267,11 @@
     .star:nth-child(5) { top: 45%; left: 50%; animation-delay: 4s; width: 3px; height: 3px; }
     .star:nth-child(6) { top: 10%; left: 65%; animation-delay: 1.5s; width: 3px; height: 3px; }
 
-    /* ===== MOBILE OVERLAY NAV ===== */
-    .mobile-nav {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: rgba(255,255,255,0.97);
-      backdrop-filter: blur(20px);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 28px;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .mobile-nav.open {
-      display: flex;
-      opacity: 1;
-    }
-
-    .mobile-nav a {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.8rem;
-      color: #2d2a3e;
-      transition: color 0.3s ease;
-    }
-
+    .mobile-nav { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(255,255,255,0.97); backdrop-filter: blur(20px); z-index: 999; align-items: center; justify-content: center; flex-direction: column; gap: 28px; opacity: 0; transition: opacity 0.4s ease; }
+    .mobile-nav.open { display: flex; opacity: 1; }
+    .mobile-nav a { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: #2d2a3e; transition: color 0.3s ease; }
     .mobile-nav a:hover { color: #9b6b9e; }
 
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
       .hero-inner { flex-direction: column; text-align: center; }
       .hero-photo { flex: 0 0 auto; width: 280px; height: 360px; }
@@ -1414,7 +324,6 @@
 </head>
 <body>
 
-  <!-- ===== HEADER ===== -->
   <header id="header">
     <div class="container">
       <a href="#hero" class="logo">Лилия <span>Ромашина</span></a>
@@ -1429,15 +338,10 @@
           <li><a href="#contacts">Контакты</a></li>
         </ul>
       </nav>
-      <button class="burger" id="burger" aria-label="Меню">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
     </div>
   </header>
 
-  <!-- Mobile Nav Overlay -->
   <div class="mobile-nav" id="mobileNav">
     <a href="#about" class="mobile-link">Обо мне</a>
     <a href="#certificates" class="mobile-link">Сертификаты</a>
@@ -1448,7 +352,6 @@
     <a href="#contacts" class="mobile-link">Контакты</a>
   </div>
 
-  <!-- ===== LIGHTBOX ===== -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox-close" id="lightboxClose">✕</button>
     <button class="lightbox-nav lightbox-prev" id="lightboxPrev">❮</button>
@@ -1458,21 +361,11 @@
 
   <main>
 
-    <!-- ===== HERO ===== -->
     <section id="hero">
-      <div class="stars">
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-      </div>
+      <div class="stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
       <div class="container">
         <div class="hero-inner">
-          <div class="hero-photo">
-            <img src="img/1.jpg" alt="Лилия Ромашина — проводник высоких энергий, нумеролог">
-          </div>
+          <div class="hero-photo"><img src="img/1.jpg" alt="Лилия Ромашина — проводник высоких энергий, нумеролог"></div>
           <div class="hero-content">
             <p class="hero-welcome">✨ Добро пожаловать! Я рада, что Вселенная привела тебя именно сюда. Это не случайность — это первый шаг к твоей трансформации.</p>
             <h1><em>Лилия Ромашина</em> — проводник высоких энергий и трансформации сознания</h1>
@@ -1483,7 +376,6 @@
       </div>
     </section>
 
-    <!-- ===== ABOUT ===== -->
     <section id="about">
       <div class="container">
         <div class="about-grid">
@@ -1491,80 +383,38 @@
             <span class="section-label">Обо мне</span>
             <h2 class="section-title">Та самая женщина, которая знает: мысли становятся реальностью</h2>
             <div class="divider"></div>
-
             <p>Меня зовут Лилия, и я не просто верю в силу намерения — я <strong>прожила</strong> это. Моя семья, мои дети, вся моя жизнь — результат осознанного выбора и глубокой внутренней работы. Когда в 43 года я приняла решение стать мамой во второй раз, окружающие крутили пальцем у виска. Но я знала: <strong>если сердце говорит «да» — Вселенная найдёт способ</strong>.</p>
-
-            <div class="about-highlight">
-              <p>«Именно тогда я по-настоящему осознала мощь своей внутренней силы. И поняла: я должна передать это знание дальше.»</p>
-            </div>
-
+            <div class="about-highlight"><p>«Именно тогда я по-настоящему осознала мощь своей внутренней силы. И поняла: я должна передать это знание дальше.»</p></div>
             <p>Жизнь постоянно посылает нам знаки — через числа, через тело, через повторяющиеся ситуации. Большинство людей проходит мимо, не замечая. Я научилась читать эти послания — и хочу <strong>научить тебя</strong>.</p>
-
             <p>Мой путь в духовном развитии прошёл через обучение у сильнейших мастеров и наставников:</p>
-
-            <div class="about-masters">
-              <span class="master-tag">Александр Свияш</span>
-              <span class="master-tag">Анатолий Некрасов</span>
-              <span class="master-tag">Мара Баронина</span>
-            </div>
+            <div class="about-masters"><span class="master-tag">Александр Свияш</span><span class="master-tag">Анатолий Некрасов</span><span class="master-tag">Мара Баронина</span></div>
           </div>
-
           <div class="about-stats reveal">
-            <div class="stat-card">
-              <span class="stat-number">30+</span>
-              <span class="stat-text">лет на пути осознанности</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">1000+</span>
-              <span class="stat-text">людей, которым помогла изменить жизнь</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">3</span>
-              <span class="stat-text">школы мастеров</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">∞</span>
-              <span class="stat-text">вера в твой потенциал</span>
-            </div>
+            <div class="stat-card"><span class="stat-number">30+</span><span class="stat-text">лет на пути осознанности</span></div>
+            <div class="stat-card"><span class="stat-number">1000+</span><span class="stat-text">людей, которым помогла изменить жизнь</span></div>
+            <div class="stat-card"><span class="stat-number">3</span><span class="stat-text">школы мастеров</span></div>
+            <div class="stat-card"><span class="stat-number">∞</span><span class="stat-text">вера в твой потенциал</span></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== CERTIFICATES ===== -->
     <section id="certificates">
       <div class="container section-center">
         <span class="section-label reveal">Сертификаты</span>
         <h2 class="section-title reveal">Подтверждение квалификации</h2>
         <div class="divider divider-center"></div>
         <p class="section-subtitle reveal">Каждый сертификат — это ступень моего пути. Обучение у лучших мастеров дало мне инструменты, которыми я делюсь с тобой.</p>
-
         <div class="certs-grid">
-          <div class="cert-card reveal" data-gallery="certs" data-index="0">
-            <img src="diploms/1.jpg" alt="Сертификат Лилии Ромашиной — обучение духовным практикам">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="1">
-            <img src="diploms/2.jpg" alt="Диплом Лилии Ромашиной — нумерология">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="2">
-            <img src="diploms/3.jpg" alt="Сертификат Лилии Ромашиной — энергодиагностика">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="3">
-            <img src="diploms/4.jpg" alt="Диплом Лилии Ромашиной — трансформация сознания">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="4">
-            <img src="diploms/5.jpg" alt="Сертификат Лилии Ромашиной — духовное развитие и энергопрактики">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="0"><img src="diploms/1.jpg" alt="Сертификат Лилии Ромашиной — обучение духовным практикам"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="1"><img src="diploms/2.jpg" alt="Диплом Лилии Ромашиной — нумерология"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="2"><img src="diploms/3.jpg" alt="Сертификат Лилии Ромашиной — энергодиагностика"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="3"><img src="diploms/4.jpg" alt="Диплом Лилии Ромашиной — трансформация сознания"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="4"><img src="diploms/5.jpg" alt="Сертификат Лилии Ромашиной — духовное развитие и энергопрактики"><div class="cert-overlay"><span>🔍</span></div></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== GIFT: MONEY CODE ===== -->
     <section id="gift">
       <div class="container">
         <div class="gift-inner reveal">
@@ -1578,49 +428,22 @@
       </div>
     </section>
 
-    <!-- ===== AUDIENCE ===== -->
     <section id="audience">
       <div class="container section-center">
         <span class="section-label reveal">Кому подходит</span>
         <h2 class="section-title reveal">Узнаёшь себя?</h2>
         <p class="section-subtitle reveal">Если хотя бы один пункт откликается — значит, ты здесь не случайно. Вселенная уже подала тебе знак.</p>
-
         <div class="audience-grid">
-          <div class="audience-card reveal">
-            <span class="audience-icon">🌀</span>
-            <h3>Потерял(а) себя</h3>
-            <p>Ты чувствуешь, что живёшь не свою жизнь. Внутри — пустота и ощущение, что твоё настоящее предназначение где-то рядом, но ты не можешь его нащупать.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">🔄</span>
-            <h3>День сурка в проблемах</h3>
-            <p>Одни и те же сценарии повторяются снова и снова — в отношениях, здоровье, финансах. Ты устал(а) бороться с симптомами и хочешь найти настоящую причину.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">💫</span>
-            <h3>Тело подаёт сигналы</h3>
-            <p>Болезни и недомогания не уходят, несмотря на лечение? Часто корень — в энергетике. Пора разобраться, что на самом деле говорит тебе твоё тело.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">🤗</span>
-            <h3>Ищешь «своих» людей</h3>
-            <p>Окружение не понимает твоих стремлений. Ты ищешь единомышленников — людей, которые говорят на одном языке с тобой и поддержат на пути роста.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">🚧</span>
-            <h3>Застрял(а) на пути развития</h3>
-            <p>Ты уже многое знаешь о саморазвитии, но результаты не приходят. Кажется, нужен проводник, который поможет пробить невидимый потолок.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">🔢</span>
-            <h3>Хочешь знать свой код судьбы</h3>
-            <p>Тебя притягивают числа и знаки? Нумерология и экспресс-диагностика по дате рождения откроют карту твоей жизни — и ключи к успеху, которые ты не замечал(а).</p>
-          </div>
+          <div class="audience-card reveal"><span class="audience-icon">🌀</span><h3>Потерял(а) себя</h3><p>Ты чувствуешь, что живёшь не свою жизнь. Внутри — пустота и ощущение, что твоё настоящее предназначение где-то рядом, но ты не можешь его нащупать.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">🔄</span><h3>День сурка в проблемах</h3><p>Одни и те же сценарии повторяются снова и снова — в отношениях, здоровье, финансах. Ты устал(а) бороться с симптомами и хочешь найти настоящую причину.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">💫</span><h3>Тело подаёт сигналы</h3><p>Болезни и недомогания не уходят, несмотря на лечение? Часто корень — в энергетике. Пора разобраться, что на самом деле говорит тебе твоё тело.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">🤗</span><h3>Ищешь «своих» людей</h3><p>Окружение не понимает твоих стремлений. Ты ищешь единомышленников — людей, которые говорят на одном языке с тобой и поддержат на пути роста.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">🚧</span><h3>Застрял(а) на пути развития</h3><p>Ты уже многое знаешь о саморазвитии, но результаты не приходят. Кажется, нужен проводник, который поможет пробить невидимый потолок.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">🔢</span><h3>Хочешь знать свой код судьбы</h3><p>Тебя притягивают числа и знаки? Нумерология и экспресс-диагностика по дате рождения откроют карту твоей жизни — и ключи к успеху, которые ты не замечал(а).</p></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== SERVICES ===== -->
     <section id="services">
       <div class="container">
         <div class="section-center">
@@ -1630,103 +453,37 @@
           <p class="section-subtitle reveal">Каждый инструмент проверен на практике — на моём собственном пути и на пути сотен людей, которым я помогла.</p>
         </div>
         <div class="services-grid">
-          <div class="service-item reveal">
-            <div class="service-icon">📡</div>
-            <div>
-              <h3>Развивающие эфиры и онлайн-встречи</h3>
-              <p>Регулярные прямые эфиры в сообществе «Трансформация», где мы исследуем глубины сознания и открываем новые горизонты вместе.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">🔢</div>
-            <div>
-              <h3>Нумерология</h3>
-              <p>Узнай тайны чисел своей судьбы. Раскрой секрет своего уникального пути к успеху, гармонии и изобилию.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">⚡</div>
-            <div>
-              <h3>Анализ энергетики тела</h3>
-              <p>Почему возникают болезни и повторяющиеся проблемы? Найдём глубинные энергетические причины и путь к исцелению.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">📅</div>
-            <div>
-              <h3>Экспресс-диагностика по дате рождения</h3>
-              <p>Всего одно число способно перевернуть твоё представление о себе. Быстрый и точный разбор, который запускает трансформацию.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">💜</div>
-            <div>
-              <h3>Сообщество единомышленников</h3>
-              <p>Люди, чьи сердца бьются в унисон с твоим. Поддержка, общение, обмен опытом — всё, что нужно на пути осознанности.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">📣</div>
-            <div>
-              <h3>Реклама и партнёрство</h3>
-              <p>Хочешь провести свой эфир или разместить рекламу в нашем сообществе? Свяжись со мной — обсудим возможности сотрудничества.</p>
-            </div>
-          </div>
+          <div class="service-item reveal"><div class="service-icon">📡</div><div><h3>Развивающие эфиры и онлайн-встречи</h3><p>Регулярные прямые эфиры в сообществе «Трансформация», где мы исследуем глубины сознания и открываем новые горизонты вместе.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">🔢</div><div><h3>Нумерология</h3><p>Узнай тайны чисел своей судьбы. Раскрой секрет своего уникального пути к успеху, гармонии и изобилию.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">⚡</div><div><h3>Анализ энергетики тела</h3><p>Почему возникают болезни и повторяющиеся проблемы? Найдём глубинные энергетические причины и путь к исцелению.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">📅</div><div><h3>Экспресс-диагностика по дате рождения</h3><p>Всего одно число способно перевернуть твоё представление о себе. Быстрый и точный разбор, который запускает трансформацию.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">💜</div><div><h3>Сообщество единомышленников</h3><p>Люди, чьи сердца бьются в унисон с твоим. Поддержка, общение, обмен опытом — всё, что нужно на пути осознанности.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">📣</div><div><h3>Реклама и партнёрство</h3><p>Хочешь провести свой эфир или разместить рекламу в нашем сообществе? Свяжись со мной — обсудим возможности сотрудничества.</p></div></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== RESULTS ===== -->
     <section id="results">
       <div class="container section-center">
         <span class="section-label reveal">Результаты</span>
         <h2 class="section-title reveal">Что ты получишь, пройдя этот путь</h2>
         <div class="divider divider-center"></div>
         <p class="section-subtitle reveal">Это не абстрактные обещания — это реальные изменения, которые происходят, когда ты начинаешь работать со своей энергией осознанно.</p>
-
         <div class="results-grid">
-          <div class="result-card reveal">
-            <span class="result-num">1</span>
-            <h3>Ясность предназначения</h3>
-            <p>Ты наконец поймёшь, зачем пришёл(а) в этот мир и куда направить свою энергию. Тумана больше не будет — только чёткий путь.</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">2</span>
-            <h3>Свобода от негативных сценариев</h3>
-            <p>Повторяющиеся проблемы уйдут, потому что ты уберёшь их причину — на уровне энергетики, а не симптомов.</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">3</span>
-            <h3>Внутренняя сила и уверенность</h3>
-            <p>Ты почувствуешь опору внутри себя. Перестанешь искать ответы снаружи — потому что они всегда были в тебе.</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">4</span>
-            <h3>Гармония тела и духа</h3>
-            <p>Поймёшь энергетические причины болезней и научишься трансформировать их. Тело перестанет «кричать» — оно начнёт «петь».</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">5</span>
-            <h3>Поддерживающее окружение</h3>
-            <p>Ты станешь частью сообщества людей, которые вдохновляют, понимают и помогают расти — каждый день.</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">6</span>
-            <h3>Практические инструменты</h3>
-            <p>Нумерология, энергодиагностика, знаки Вселенной — ты получишь конкретные инструменты, которые работают в повседневной жизни.</p>
-          </div>
+          <div class="result-card reveal"><span class="result-num">1</span><h3>Ясность предназначения</h3><p>Ты наконец поймёшь, зачем пришёл(а) в этот мир и куда направить свою энергию. Тумана больше не будет — только чёткий путь.</p></div>
+          <div class="result-card reveal"><span class="result-num">2</span><h3>Свобода от негативных сценариев</h3><p>Повторяющиеся проблемы уйдут, потому что ты уберёшь их причину — на уровне энергетики, а не симптомов.</p></div>
+          <div class="result-card reveal"><span class="result-num">3</span><h3>Внутренняя сила и уверенность</h3><p>Ты почувствуешь опору внутри себя. Перестанешь искать ответы снаружи — потому что они всегда были в тебе.</p></div>
+          <div class="result-card reveal"><span class="result-num">4</span><h3>Гармония тела и духа</h3><p>Поймёшь энергетические причины болезней и научишься трансформировать их. Тело перестанет «кричать» — оно начнёт «петь».</p></div>
+          <div class="result-card reveal"><span class="result-num">5</span><h3>Поддерживающее окружение</h3><p>Ты станешь частью сообщества людей, которые вдохновляют, понимают и помогают расти — каждый день.</p></div>
+          <div class="result-card reveal"><span class="result-num">6</span><h3>Практические инструменты</h3><p>Нумерология, энергодиагностика, знаки Вселенной — ты получишь конкретные инструменты, которые работают в повседневной жизни.</p></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== REVIEWS ===== -->
     <section id="reviews">
       <div class="container">
-
         <div class="reviews-intro reveal">
-          <div class="reviews-intro-photo">
-            <img src="img/2.jpg" alt="Лилия Ромашина — отзывы клиентов">
-          </div>
+          <div class="reviews-intro-photo"><img src="img/2.jpg" alt="Лилия Ромашина — отзывы клиентов"></div>
           <div class="reviews-intro-text">
             <span class="section-label">Отзывы</span>
             <h2 class="section-title">Что говорят те, кто уже прошёл этот путь</h2>
@@ -1737,149 +494,63 @@
         <p class="video-section-label reveal">🎬 Видеоотзывы</p>
 
         <div class="videos-grid">
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/5494bb8b3d84e504c3ad63e6ed93606a/?p=yghWSe1sfMM02ucm9DIIMQ">
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
-          </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/4e4f2b04a190282e400839c9ebcbbad6/?p=ZBKuVl6Z1GyCaagq8TrZwQ">
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
-          </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/c0c7bf42afc8613b4b75c56b47e5ef1d/?p=YV4qzqTnQOEGDQRkKj5J6A">
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
-          </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/28be5e0a54d98f71bcddfd7a598d711c/?p=4GIjEdXaSogHXJgP7mJLZg">
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
-          </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/bd78e163cba33cce877e7f48e915617e/?p=aVvra1hDsSV1cctkG2qLMg">
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
-          </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/20a2955f0d83dd3fdf0037a62a1ec29c/?p=zE4LFsrPCiJFT8kHBUWDug">
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
-          </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/381475147b7b25520f39f230a7e2cc26/?p=IU2SYBmDXggp0ZvfiObwOQ">
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
-          </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/eb04f262027b3c6aae4f49da941d19a0/?p=GHZZB8G7lMEnSH4Gb3ci4A">
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
-          </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/e391501e3293aa083835e7502802e877/?p=GTwixZTvedblKHHZkjraTw">
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
-          </div>
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/5494bb8b3d84e504c3ad63e6ed93606a/?p=yghWSe1sfMM02ucm9DIIMQ"><div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div></div>
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/4e4f2b04a190282e400839c9ebcbbad6/?p=ZBKuVl6Z1GyCaagq8TrZwQ"><div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div></div>
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/c0c7bf42afc8613b4b75c56b47e5ef1d/?p=YV4qzqTnQOEGDQRkKj5J6A"><div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div></div>
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/28be5e0a54d98f71bcddfd7a598d711c/?p=4GIjEdXaSogHXJgP7mJLZg"><div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div></div>
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/bd78e163cba33cce877e7f48e915617e/?p=aVvra1hDsSV1cctkG2qLMg"><div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div></div>
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/20a2955f0d83dd3fdf0037a62a1ec29c/?p=zE4LFsrPCiJFT8kHBUWDug"><div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div></div>
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/381475147b7b25520f39f230a7e2cc26/?p=IU2SYBmDXggp0ZvfiObwOQ"><div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div></div>
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/eb04f262027b3c6aae4f49da941d19a0/?p=GHZZB8G7lMEnSH4Gb3ci4A"><div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div></div>
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/e391501e3293aa083835e7502802e877/?p=GTwixZTvedblKHHZkjraTw"><div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div></div>
         </div>
 
-        <!-- Telegram Reviews -->
         <p class="review-images-label reveal">
           <svg style="display:inline-block;vertical-align:middle;width:22px;height:22px;margin-right:6px;" viewBox="0 0 24 24" fill="#9b6b9e"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg>
           Отзывы в Телеграм
         </p>
 
         <div class="review-images-grid">
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="0">
-            <img src="reviews/1.jpg" alt="Отзыв клиента Лилии Ромашиной 1">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="1">
-            <img src="reviews/2.jpg" alt="Отзыв клиента Лилии Ромашиной 2">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="2">
-            <img src="reviews/3.jpg" alt="Отзыв клиента Лилии Ромашиной 3">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="3">
-            <img src="reviews/4.jpg" alt="Отзыв клиента Лилии Ромашиной 4">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="4">
-            <img src="reviews/5.jpg" alt="Отзыв клиента Лилии Ромашиной 5">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="5">
-            <img src="reviews/6.jpg" alt="Отзыв клиента Лилии Ромашиной 6">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="6">
-            <img src="reviews/7.jpg" alt="Отзыв клиента Лилии Ромашиной 7">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="7">
-            <img src="reviews/8.jpg" alt="Отзыв клиента Лилии Ромашиной 8">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="8">
-            <img src="reviews/9.jpg" alt="Отзыв клиента Лилии Ромашиной 9">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="9">
-            <img src="reviews/10.jpg" alt="Отзыв клиента Лилии Ромашиной 10">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="0"><img src="reviews/1.jpg" alt="Отзыв клиента 1"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="1"><img src="reviews/2.jpg" alt="Отзыв клиента 2"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="2"><img src="reviews/3.jpg" alt="Отзыв клиента 3"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="3"><img src="reviews/4.jpg" alt="Отзыв клиента 4"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="4"><img src="reviews/5.jpg" alt="Отзыв клиента 5"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="5"><img src="reviews/6.jpg" alt="Отзыв клиента 6"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="6"><img src="reviews/7.jpg" alt="Отзыв клиента 7"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="7"><img src="reviews/8.jpg" alt="Отзыв клиента 8"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="8"><img src="reviews/9.jpg" alt="Отзыв клиента 9"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="9"><img src="reviews/10.jpg" alt="Отзыв клиента 10"><div class="review-img-overlay"><span>🔍</span></div></div>
         </div>
-
       </div>
     </section>
 
-    <!-- ===== SIGNUP FORM ===== -->
     <section id="signup">
       <div class="container">
         <div class="signup-inner">
-          <div class="signup-photo reveal">
-            <img src="img/3.jpg" alt="Запись на консультацию к Лилии Ромашиной — проводнику высоких энергий">
-          </div>
-
+          <div class="signup-photo reveal"><img src="img/3.jpg" alt="Запись на консультацию к Лилии Ромашиной"></div>
           <div class="signup-form-wrap reveal">
             <span class="section-label">Запись</span>
             <h2 class="section-title">Запишись на персональную консультацию</h2>
             <p class="form-sub">Оставь свои данные — я свяжусь с тобой в течение 24 часов. Первый шаг к трансформации начинается здесь 💫</p>
-
             <form id="leadForm" novalidate>
               <div class="form-group">
                 <label for="userName">Твоё имя *</label>
                 <input type="text" id="userName" name="name" placeholder="Как тебя зовут?" required minlength="2" maxlength="20" autocomplete="name">
                 <div class="form-error" id="nameError">Введи имя (только буквы, от 2 до 20 символов)</div>
               </div>
-
               <div class="form-group">
                 <label for="userContact">Телефон *</label>
                 <input type="tel" id="userContact" name="contact" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
                 <div class="form-error" id="contactError">Введи корректный номер телефона</div>
               </div>
-
               <div class="form-group">
                 <label for="userMessage">Сообщение</label>
                 <textarea id="userMessage" name="message" placeholder="Расскажи коротко, что тебя привело сюда... (необязательно)" maxlength="1000"></textarea>
                 <div class="char-counter" id="charCounter">0 / 1000</div>
               </div>
-
               <button type="submit" class="btn-submit" id="submitBtn">Отправить заявку</button>
             </form>
-
             <div class="form-success" id="formSuccess">
               <span class="success-icon">💫</span>
               <h3>Спасибо!</h3>
@@ -1890,120 +561,68 @@
       </div>
     </section>
 
-    <!-- ===== CONTACTS ===== -->
     <section id="contacts">
       <div class="container section-center">
         <span class="section-label reveal">Контакты</span>
         <h2 class="section-title reveal">Свяжись со мной</h2>
         <div class="divider divider-center"></div>
         <p class="section-subtitle reveal">Выбери удобный способ связи — я всегда на связи и открыта к общению.</p>
-
         <div class="contacts-grid">
-
-          <!-- Телефон -->
           <div class="contact-card reveal">
             <span class="contact-icon-emoji">📞</span>
             <h3>Телефон</h3>
             <a href="tel:+79160607405">+7 916 060 74 05</a>
             <p>Я живу в Москве</p>
           </div>
-
-          <!-- Telegram личный -->
           <div class="contact-card reveal">
-            <div class="contact-icon">
-              <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg>
-            </div>
+            <div class="contact-icon"><svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg></div>
             <h3>Telegram</h3>
             <a href="https://t.me/Lilia_lvovna" target="_blank" rel="noopener">@Lilia_lvovna</a>
             <p>Напиши мне лично</p>
           </div>
-
-          <!-- Max Messenger -->
           <div class="contact-card reveal">
-            <div class="contact-icon">
-              <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="maxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#3B7DED"/>
-                    <stop offset="100%" stop-color="#8B5CF6"/>
-                  </linearGradient>
-                </defs>
-                <rect width="48" height="48" rx="12" fill="url(#maxGrad)"/>
-                <path d="M14 33l3.2-6.4C14.8 24.2 13 21 13 17.5 13 11.7 18 7 24 7s11 4.7 11 10.5S30 28 24 28c-1.6 0-3.1-.3-4.5-.9L14 33Z" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
+            <div class="contact-icon"><svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="maxGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3B7DED"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient></defs><rect width="48" height="48" rx="12" fill="url(#maxGrad)"/><path d="M14 33l3.2-6.4C14.8 24.2 13 21 13 17.5 13 11.7 18 7 24 7s11 4.7 11 10.5S30 28 24 28c-1.6 0-3.1-.3-4.5-.9L14 33Z" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <h3>Max</h3>
             <a href="tel:+79160607405">+7 916 060 74 05</a>
             <p>Найди меня по номеру</p>
           </div>
-
-          <!-- Канал Трансформация -->
           <div class="contact-card reveal">
-            <div class="contact-icon">
-              <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg>
-            </div>
+            <div class="contact-icon"><svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg></div>
             <h3>Канал «Трансформация»</h3>
             <a href="https://t.me/transformation_lily" target="_blank" rel="noopener">Присоединяйся к каналу</a>
             <p>Эфиры, практики, общение</p>
           </div>
-
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ===== FOOTER ===== -->
   <footer>
     <div class="container">
       <p>© 2026 Лилия Ромашина. Все права защищены.</p>
     </div>
   </footer>
 
-  <!-- ===== JAVASCRIPT ===== -->
   <script>
-    // ===== STICKY HEADER =====
     const header = document.getElementById('header');
-    window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 60);
-    });
+    window.addEventListener('scroll', () => { header.classList.toggle('scrolled', window.scrollY > 60); });
 
-    // ===== BURGER MENU =====
     const burger = document.getElementById('burger');
     const mobileNav = document.getElementById('mobileNav');
     const mobileLinks = document.querySelectorAll('.mobile-link');
+    burger.addEventListener('click', () => { burger.classList.toggle('active'); mobileNav.classList.toggle('open'); document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : ''; });
+    mobileLinks.forEach(link => { link.addEventListener('click', () => { burger.classList.remove('active'); mobileNav.classList.remove('open'); document.body.style.overflow = ''; }); });
 
-    burger.addEventListener('click', () => {
-      burger.classList.toggle('active');
-      mobileNav.classList.toggle('open');
-      document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
-    });
-
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        burger.classList.remove('active');
-        mobileNav.classList.remove('open');
-        document.body.style.overflow = '';
-      });
-    });
-
-    // ===== SCROLL REVEAL =====
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
+    const revealObserver = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); } }); }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    // ===== VIDEO CLICK-TO-PLAY =====
+    // ===== VIDEO CLICK-TO-PLAY (с скрытием надписи RUTUBE) =====
     document.querySelectorAll('.video-card').forEach(card => {
-      card.addEventListener('click', function() {
+      card.addEventListener('click', function(e) {
         if (this.classList.contains('playing')) return;
 
+        // Остановить другие видео
         document.querySelectorAll('.video-card.playing').forEach(other => {
           const iframe = other.querySelector('iframe');
           if (iframe) iframe.remove();
@@ -2012,11 +631,18 @@
         });
 
         const embedUrl = this.getAttribute('data-embed');
+
+        // Параметры для минимизации брендинга
+        const separator = embedUrl.includes('?') ? '&' : '?';
+        const cleanUrl = embedUrl + separator + 'noAd=true&noWatermark=true&referrer=1';
+
         const iframe = document.createElement('iframe');
-        iframe.src = embedUrl;
+        iframe.src = cleanUrl;
         iframe.setAttribute('allow', 'autoplay');
         iframe.setAttribute('allowfullscreen', '');
         iframe.setAttribute('frameborder', '0');
+        // Сдвигаем iframe вверх, чтобы верхняя полоска с надписью ушла за пределы overflow:hidden
+        iframe.style.cssText = 'width:100%;height:calc(100% + 46px);border:none;position:absolute;top:-46px;left:0;';
         this.appendChild(iframe);
         this.classList.add('playing');
       });
@@ -2028,199 +654,78 @@
     const lightboxClose = document.getElementById('lightboxClose');
     const lightboxPrev = document.getElementById('lightboxPrev');
     const lightboxNext = document.getElementById('lightboxNext');
-
     let currentGallery = [];
     let currentIndex = 0;
-
     const galleries = {};
-    document.querySelectorAll('[data-gallery]').forEach(el => {
-      const name = el.getAttribute('data-gallery');
-      if (!galleries[name]) galleries[name] = [];
-      galleries[name].push(el.querySelector('img').src);
-    });
-
-    document.querySelectorAll('[data-gallery]').forEach(el => {
-      el.addEventListener('click', () => {
-        const name = el.getAttribute('data-gallery');
-        const index = parseInt(el.getAttribute('data-index'));
-        currentGallery = galleries[name];
-        currentIndex = index;
-        showLightboxImage();
-        lightbox.classList.add('open');
-        document.body.style.overflow = 'hidden';
-      });
-    });
-
-    function showLightboxImage() {
-      lightboxImg.src = currentGallery[currentIndex];
-    }
-
+    document.querySelectorAll('[data-gallery]').forEach(el => { const name = el.getAttribute('data-gallery'); if (!galleries[name]) galleries[name] = []; galleries[name].push(el.querySelector('img').src); });
+    document.querySelectorAll('[data-gallery]').forEach(el => { el.addEventListener('click', () => { const name = el.getAttribute('data-gallery'); const index = parseInt(el.getAttribute('data-index')); currentGallery = galleries[name]; currentIndex = index; showLightboxImage(); lightbox.classList.add('open'); document.body.style.overflow = 'hidden'; }); });
+    function showLightboxImage() { lightboxImg.src = currentGallery[currentIndex]; }
     lightboxClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+    function closeLightbox() { lightbox.classList.remove('open'); document.body.style.overflow = ''; lightboxImg.src = ''; }
+    lightboxPrev.addEventListener('click', (e) => { e.stopPropagation(); currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length; showLightboxImage(); });
+    lightboxNext.addEventListener('click', (e) => { e.stopPropagation(); currentIndex = (currentIndex + 1) % currentGallery.length; showLightboxImage(); });
+    document.addEventListener('keydown', (e) => { if (!lightbox.classList.contains('open')) return; if (e.key === 'Escape') closeLightbox(); if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length; showLightboxImage(); } if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % currentGallery.length; showLightboxImage(); } });
 
-    function closeLightbox() {
-      lightbox.classList.remove('open');
-      document.body.style.overflow = '';
-      lightboxImg.src = '';
-    }
-
-    lightboxPrev.addEventListener('click', (e) => {
-      e.stopPropagation();
-      currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
-      showLightboxImage();
-    });
-
-    lightboxNext.addEventListener('click', (e) => {
-      e.stopPropagation();
-      currentIndex = (currentIndex + 1) % currentGallery.length;
-      showLightboxImage();
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (!lightbox.classList.contains('open')) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length; showLightboxImage(); }
-      if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % currentGallery.length; showLightboxImage(); }
-    });
-
-    // ===== INPUT: ИМЯ (только буквы, макс 20) =====
+    // ===== INPUT: ИМЯ =====
     const nameInput = document.getElementById('userName');
-    nameInput.addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Zа-яА-ЯёЁ\s\-]/g, '');
-      if (this.value.length > 20) {
-        this.value = this.value.slice(0, 20);
-      }
-    });
+    nameInput.addEventListener('input', function() { this.value = this.value.replace(/[^a-zA-Zа-яА-ЯёЁ\s\-]/g, ''); if (this.value.length > 20) this.value = this.value.slice(0, 20); });
 
-    // ===== INPUT: ТЕЛЕФОН (автоформат) =====
+    // ===== INPUT: ТЕЛЕФОН =====
     const contactInput = document.getElementById('userContact');
-
     contactInput.addEventListener('input', function() {
       let digits = this.value.replace(/\D/g, '');
-
-      if (digits.length > 0 && digits[0] === '8') {
-        digits = '7' + digits.slice(1);
-      }
-
-      if (digits.length > 11) {
-        digits = digits.slice(0, 11);
-      }
-
-      let formatted = '';
-      if (digits.length === 0) {
-        formatted = '';
-      } else if (digits.length <= 1) {
-        formatted = '+' + digits;
-      } else if (digits.length <= 4) {
-        formatted = '+' + digits[0] + ' (' + digits.slice(1);
-      } else if (digits.length <= 7) {
-        formatted = '+' + digits[0] + ' (' + digits.slice(1, 4) + ') ' + digits.slice(4);
-      } else if (digits.length <= 9) {
-        formatted = '+' + digits[0] + ' (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7);
-      } else {
-        formatted = '+' + digits[0] + ' (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7, 9) + '-' + digits.slice(9, 11);
-      }
-
-      this.value = formatted;
+      if (digits.length > 0 && digits[0] === '8') digits = '7' + digits.slice(1);
+      if (digits.length > 11) digits = digits.slice(0, 11);
+      let f = '';
+      if (digits.length === 0) f = '';
+      else if (digits.length <= 1) f = '+' + digits;
+      else if (digits.length <= 4) f = '+' + digits[0] + ' (' + digits.slice(1);
+      else if (digits.length <= 7) f = '+' + digits[0] + ' (' + digits.slice(1,4) + ') ' + digits.slice(4);
+      else if (digits.length <= 9) f = '+' + digits[0] + ' (' + digits.slice(1,4) + ') ' + digits.slice(4,7) + '-' + digits.slice(7);
+      else f = '+' + digits[0] + ' (' + digits.slice(1,4) + ') ' + digits.slice(4,7) + '-' + digits.slice(7,9) + '-' + digits.slice(9,11);
+      this.value = f;
     });
+    contactInput.addEventListener('focus', function() { if (this.value === '') this.value = '+7'; });
 
-    contactInput.addEventListener('focus', function() {
-      if (this.value === '') this.value = '+7';
-    });
-
-    // ===== TEXTAREA: счётчик символов =====
+    // ===== TEXTAREA =====
     const messageInput = document.getElementById('userMessage');
     const charCounter = document.getElementById('charCounter');
+    messageInput.addEventListener('input', function() { const len = this.value.length; charCounter.textContent = len + ' / 1000'; charCounter.classList.remove('warn','limit'); if (len >= 1000) charCounter.classList.add('limit'); else if (len >= 800) charCounter.classList.add('warn'); });
 
-    messageInput.addEventListener('input', function() {
-      const len = this.value.length;
-      charCounter.textContent = len + ' / 1000';
-      charCounter.classList.remove('warn', 'limit');
-      if (len >= 1000) charCounter.classList.add('limit');
-      else if (len >= 800) charCounter.classList.add('warn');
-    });
-
-    // ===== FORM HANDLING =====
+    // ===== FORM =====
     const form = document.getElementById('leadForm');
     const submitBtn = document.getElementById('submitBtn');
     const formSuccess = document.getElementById('formSuccess');
     const nameError = document.getElementById('nameError');
     const contactError = document.getElementById('contactError');
-
     function showError(el) { el.style.display = 'block'; }
     function hideError(el) { el.style.display = 'none'; }
-
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-
-      hideError(nameError);
-      hideError(contactError);
-
+      hideError(nameError); hideError(contactError);
       const name = nameInput.value.trim();
       const contactRaw = contactInput.value.trim();
       const message = messageInput.value.trim();
       const digits = contactRaw.replace(/\D/g, '');
-
       let isValid = true;
-
-      if (name.length < 2 || name.length > 20 || !/[a-zA-Zа-яА-ЯёЁ]{2,}/.test(name)) {
-        showError(nameError);
-        isValid = false;
-      }
-
-      if (digits.length < 11) {
-        showError(contactError);
-        isValid = false;
-      }
-
+      if (name.length < 2 || name.length > 20 || !/[a-zA-Zа-яА-ЯёЁ]{2,}/.test(name)) { showError(nameError); isValid = false; }
+      if (digits.length < 11) { showError(contactError); isValid = false; }
       if (!isValid) return;
-
       const normalizedPhone = '+7' + digits.slice(1);
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Отправка...';
-
+      submitBtn.disabled = true; submitBtn.textContent = 'Отправка...';
       const text = `🔔 Новая заявка с сайта!\n\n👤 Имя: ${name}\n📱 Телефон: ${normalizedPhone}\n💬 Сообщение: ${message || 'Не указано'}`;
-
-      form.style.display = 'none';
-      formSuccess.classList.add('show');
-
-      // ЗАМЕНИТЬ: YOUR_BOT_TOKEN и YOUR_CHAT_ID
+      form.style.display = 'none'; formSuccess.classList.add('show');
       const BOT_TOKEN = 'YOUR_BOT_TOKEN';
       const CHAT_ID = 'YOUR_CHAT_ID';
-
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: text })
-      }).catch(err => console.warn('Telegram:', err));
-
-      // ЗАМЕНИТЬ: your-email@example.com
-      fetch('https://formsubmit.co/ajax/your-email@example.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          name: name,
-          contact: normalizedPhone,
-          message: message || 'Не указано',
-          _subject: 'Новая заявка с сайта Лилии Ромашиной'
-        })
-      }).catch(err => console.warn('Email:', err));
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CHAT_ID, text: text }) }).catch(err => console.warn('Telegram:', err));
+      fetch('https://formsubmit.co/ajax/your-email@example.com', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ name: name, contact: normalizedPhone, message: message || 'Не указано', _subject: 'Новая заявка с сайта Лилии Ромашиной' }) }).catch(err => console.warn('Email:', err));
     });
 
-    // ===== ACTIVE NAV HIGHLIGHT =====
+    // ===== NAV HIGHLIGHT =====
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('nav a');
-
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(section => {
-        if (scrollY >= section.offsetTop - 120) current = section.getAttribute('id');
-      });
-      navLinks.forEach(link => {
-        link.style.color = link.getAttribute('href') === `#${current}` ? '#9b6b9e' : '';
-      });
-    });
+    window.addEventListener('scroll', () => { let current = ''; sections.forEach(section => { if (scrollY >= section.offsetTop - 120) current = section.getAttribute('id'); }); navLinks.forEach(link => { link.style.color = link.getAttribute('href') === `#${current}` ? '#9b6b9e' : ''; }); });
   </script>
 
 </body>
