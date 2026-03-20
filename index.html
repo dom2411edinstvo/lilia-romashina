@@ -2140,7 +2140,7 @@
       else if (len >= 800) charCounter.classList.add('warn');
     });
 
-    // ===== FORM HANDLING =====
+        // ===== FORM HANDLING =====
     const form = document.getElementById('leadForm');
     const submitBtn = document.getElementById('submitBtn');
     const formSuccess = document.getElementById('formSuccess');
@@ -2150,7 +2150,7 @@
     function showError(el) { el.style.display = 'block'; }
     function hideError(el) { el.style.display = 'none'; }
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       hideError(nameError);
@@ -2180,32 +2180,43 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Отправка...';
 
-      const text = `🔔 Новая заявка с сайта!\n\n👤 Имя: ${name}\n📱 Телефон: ${normalizedPhone}\n💬 Сообщение: ${message || 'Не указано'}`;
-
-      form.style.display = 'none';
-      formSuccess.classList.add('show');
-
-      // ЗАМЕНИТЬ: YOUR_BOT_TOKEN и YOUR_CHAT_ID
       const BOT_TOKEN = '8782195281:AAEXb4LMAv5b8W_3g_zyiUPwWP-1f5YoxpM';
       const CHAT_ID = '5569439365';
 
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: text })
-      }).catch(err => console.warn('Telegram:', err));
+      const text = '🔔 Новая заявка с сайта!\n\n'
+        + '👤 Имя: ' + name + '\n'
+        + '📱 Телефон: ' + normalizedPhone + '\n'
+        + '💬 Сообщение: ' + (message || 'Не указано');
 
-      // ЗАМЕНИТЬ: your-email@example.com
-      fetch('https://formsubmit.co/ajax/your-email@example.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          name: name,
-          contact: normalizedPhone,
-          message: message || 'Не указано',
-          _subject: 'Новая заявка с сайта Лилии Ромашиной'
-        })
-      }).catch(err => console.warn('Email:', err));
+      try {
+        const response = await fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: text
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.ok) {
+          console.log('✅ Telegram: сообщение отправлено!');
+          form.style.display = 'none';
+          formSuccess.classList.add('show');
+        } else {
+          console.error('❌ Telegram ошибка:', result.description);
+          alert('Ошибка отправки: ' + result.description + '\n\nУбедитесь, что вы нажали /start в чате с ботом.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Отправить заявку';
+        }
+
+      } catch (err) {
+        console.error('❌ Сетевая ошибка:', err);
+        alert('Ошибка сети. Проверьте интернет-соединение.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить заявку';
+      }
     });
 
     // ===== ACTIVE NAV HIGHLIGHT =====
