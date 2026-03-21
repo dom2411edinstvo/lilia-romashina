@@ -632,7 +632,7 @@
     </section>
 
     <!-- SIGNUP FORM -->
-    <section id="signup" class="cv-auto">
+    <section id="signup">
       <div class="container">
         <div class="signup-inner">
           <div class="signup-photo reveal">
@@ -1057,10 +1057,6 @@
 
       var normalizedPhone = '+7' + digits.slice(1);
 
-      // === INSTANT: show success right away ===
-      form.style.display = 'none';
-      formSuccess.classList.add('show');
-
       // === Build message text ===
       var text = '\u{1F514} Новая заявка с сайта!\n\n'
         + '\u{1F464} Имя: ' + name + '\n'
@@ -1072,8 +1068,12 @@
         text: text
       });
 
-      // === Send in background (fire-and-forget with auto-retry) ===
+      // === Send FIRST, before DOM changes (critical for mobile) ===
       sendToTelegram(payload, 0);
+
+      // === Then show success ===
+      form.style.display = 'none';
+      formSuccess.classList.add('show');
     });
 
     // ===== ACTIVE NAV — throttled with rAF =====
