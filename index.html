@@ -16,10 +16,12 @@
   <meta property="og:image" content="https://liliya-romashina.ru/img/1.jpg">
   <meta property="og:locale" content="ru_RU">
 
-  <!-- Google Fonts -->
+  <!-- Google Fonts — optimized loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://pic.rutube.ru" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
@@ -56,7 +58,7 @@
     }
 
     body {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
       background-color: #faf9f7;
       color: #2d2a3e;
       line-height: 1.7;
@@ -65,7 +67,7 @@
     }
 
     h1, h2, h3, h4 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 600;
       line-height: 1.25;
       color: #1e1b30;
@@ -157,7 +159,7 @@
     }
 
     .logo {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 1.5rem;
       font-weight: 700;
       color: #9b6b9e;
@@ -324,7 +326,7 @@
     .btn {
       display: inline-block;
       padding: 16px 40px;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Montserrat', system-ui, sans-serif;
       font-size: 0.9rem;
       font-weight: 600;
       text-transform: uppercase;
@@ -431,7 +433,7 @@
 
     .about-highlight p {
       font-style: italic;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 1.2rem;
       font-weight: 700;
       color: #2d2a3e !important;
@@ -477,7 +479,7 @@
     }
 
     .stat-number {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 2.4rem;
       font-weight: 700;
       color: #9b6b9e;
@@ -499,7 +501,7 @@
 
     .certs-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 24px;
     }
 
@@ -610,7 +612,7 @@
     .gift-content .btn-gift {
       display: inline-block;
       padding: 16px 40px;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Montserrat', system-ui, sans-serif;
       font-size: 0.9rem;
       font-weight: 600;
       text-transform: uppercase;
@@ -778,7 +780,7 @@
       border-radius: 50%;
       background: linear-gradient(135deg, #9b6b9e, #b388b6);
       color: #fff;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 1.3rem;
       font-weight: 700;
       margin-bottom: 20px;
@@ -828,7 +830,7 @@
     .reviews-intro-text { flex: 1; }
 
     .reviews-sub-title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 1.6rem;
       color: #5a4a6b;
       margin-top: 16px;
@@ -877,7 +879,22 @@
       justify-content: center;
       flex-direction: column;
       gap: 12px;
-      background: linear-gradient(135deg, #f3eef8, #fdf6f0);
+      background: linear-gradient(135deg, #e8dff0, #f3eef8, #fdf6f0);
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .video-placeholder.has-thumb {
+      background-color: #1e1b30;
+    }
+
+    .video-placeholder.has-thumb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.15);
+      z-index: 1;
     }
 
     .play-btn {
@@ -890,12 +907,24 @@
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .has-thumb .play-btn {
+      background: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.6);
     }
 
     .video-card:hover .play-btn {
       background: rgba(155,107,158,0.3);
       border-color: #9b6b9e;
       transform: scale(1.1);
+    }
+
+    .has-thumb:hover .play-btn {
+      background: rgba(255,255,255,0.4);
+      border-color: #fff;
     }
 
     .play-btn svg {
@@ -905,10 +934,20 @@
       margin-left: 3px;
     }
 
+    .has-thumb .play-btn svg {
+      fill: #fff;
+    }
+
     .video-label {
       font-size: 0.8rem;
       color: #8a7fa0;
       letter-spacing: 1px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .has-thumb .video-label {
+      color: rgba(255,255,255,0.85);
     }
 
     .video-card iframe {
@@ -918,9 +957,52 @@
       position: absolute;
       top: 0;
       left: 0;
+      z-index: 5;
     }
 
     .video-card.playing .video-placeholder { display: none; }
+
+    /* Video thumbnail image */
+    .video-thumb {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    /* Close button on playing video */
+    .video-close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      font-size: 1.1rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background 0.3s ease;
+      line-height: 1;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    .video-close-btn:hover {
+      background: rgba(155,107,158,0.8);
+    }
+
+    .video-card.playing .video-close-btn {
+      display: flex;
+    }
 
     /* Review Images Grid */
     .review-images-label {
@@ -1131,7 +1213,7 @@
       border: 1px solid rgba(155,107,158,0.2);
       border-radius: 12px;
       color: #2d2a3e;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Montserrat', system-ui, sans-serif;
       font-size: 0.95rem;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
       outline: none;
@@ -1166,7 +1248,7 @@
     .btn-submit {
       width: 100%;
       padding: 16px 40px;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Montserrat', system-ui, sans-serif;
       font-size: 0.95rem;
       font-weight: 600;
       text-transform: uppercase;
@@ -1353,7 +1435,7 @@
     }
 
     .mobile-nav a {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 1.8rem;
       color: #2d2a3e;
       transition: color 0.3s ease;
@@ -1471,7 +1553,7 @@
       <div class="container">
         <div class="hero-inner">
           <div class="hero-photo">
-            <img src="img/1.jpg" alt="Лилия Ромашина — проводник высоких энергий, нумеролог">
+            <img src="img/1.jpg" alt="Лилия Ромашина — проводник высоких энергий, нумеролог" fetchpriority="high">
           </div>
           <div class="hero-content">
             <p class="hero-welcome">✨ Добро пожаловать! Я рада, что Вселенная привела тебя именно сюда. Это не случайность — это первый шаг к твоей трансформации.</p>
@@ -1541,23 +1623,31 @@
 
         <div class="certs-grid">
           <div class="cert-card reveal" data-gallery="certs" data-index="0">
-            <img src="diploms/1.jpg" alt="Сертификат Лилии Ромашиной — обучение духовным практикам">
+            <img src="diploms/1.jpg" alt="Сертификат Лилии Ромашиной — обучение духовным практикам" loading="lazy" decoding="async">
             <div class="cert-overlay"><span>🔍</span></div>
           </div>
           <div class="cert-card reveal" data-gallery="certs" data-index="1">
-            <img src="diploms/2.jpg" alt="Диплом Лилии Ромашиной — нумерология">
+            <img src="diploms/2.jpg" alt="Диплом Лилии Ромашиной — нумерология" loading="lazy" decoding="async">
             <div class="cert-overlay"><span>🔍</span></div>
           </div>
           <div class="cert-card reveal" data-gallery="certs" data-index="2">
-            <img src="diploms/3.jpg" alt="Сертификат Лилии Ромашиной — энергодиагностика">
+            <img src="diploms/3.jpg" alt="Сертификат Лилии Ромашиной — энергодиагностика" loading="lazy" decoding="async">
             <div class="cert-overlay"><span>🔍</span></div>
           </div>
           <div class="cert-card reveal" data-gallery="certs" data-index="3">
-            <img src="diploms/4.jpg" alt="Диплом Лилии Ромашиной — трансформация сознания">
+            <img src="diploms/4.jpg" alt="Диплом Лилии Ромашиной — трансформация сознания" loading="lazy" decoding="async">
             <div class="cert-overlay"><span>🔍</span></div>
           </div>
           <div class="cert-card reveal" data-gallery="certs" data-index="4">
-            <img src="diploms/5.jpg" alt="Сертификат Лилии Ромашиной — духовное развитие и энергопрактики">
+            <img src="diploms/5.jpg" alt="Сертификат Лилии Ромашиной — духовное развитие и энергопрактики" loading="lazy" decoding="async">
+            <div class="cert-overlay"><span>🔍</span></div>
+          </div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="5">
+            <img src="diploms/6.jpg" alt="Сертификат Лилии Ромашиной — продвинутые духовные практики" loading="lazy" decoding="async">
+            <div class="cert-overlay"><span>🔍</span></div>
+          </div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="6">
+            <img src="diploms/7.jpg" alt="Сертификат Лилии Ромашиной — мастер энергетических практик" loading="lazy" decoding="async">
             <div class="cert-overlay"><span>🔍</span></div>
           </div>
         </div>
@@ -1725,7 +1815,7 @@
 
         <div class="reviews-intro reveal">
           <div class="reviews-intro-photo">
-            <img src="img/2.jpg" alt="Лилия Ромашина — отзывы клиентов">
+            <img src="img/2.jpg" alt="Лилия Ромашина — отзывы клиентов" loading="lazy" decoding="async">
           </div>
           <div class="reviews-intro-text">
             <span class="section-label">Отзывы</span>
@@ -1737,55 +1827,64 @@
         <p class="video-section-label reveal">🎬 Видеоотзывы</p>
 
         <div class="videos-grid">
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/5494bb8b3d84e504c3ad63e6ed93606a/?p=yghWSe1sfMM02ucm9DIIMQ">
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/5494bb8b3d84e504c3ad63e6ed93606a/?p=yghWSe1sfMM02ucm9DIIMQ" data-video-id="5494bb8b3d84e504c3ad63e6ed93606a">
+            <button class="video-close-btn" title="Закрыть видео">✕</button>
             <div class="video-placeholder">
               <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
               <span class="video-label">Нажмите для воспроизведения</span>
             </div>
           </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/4e4f2b04a190282e400839c9ebcbbad6/?p=ZBKuVl6Z1GyCaagq8TrZwQ">
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/4e4f2b04a190282e400839c9ebcbbad6/?p=ZBKuVl6Z1GyCaagq8TrZwQ" data-video-id="4e4f2b04a190282e400839c9ebcbbad6">
+            <button class="video-close-btn" title="Закрыть видео">✕</button>
             <div class="video-placeholder">
               <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
               <span class="video-label">Нажмите для воспроизведения</span>
             </div>
           </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/c0c7bf42afc8613b4b75c56b47e5ef1d/?p=YV4qzqTnQOEGDQRkKj5J6A">
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/c0c7bf42afc8613b4b75c56b47e5ef1d/?p=YV4qzqTnQOEGDQRkKj5J6A" data-video-id="c0c7bf42afc8613b4b75c56b47e5ef1d">
+            <button class="video-close-btn" title="Закрыть видео">✕</button>
             <div class="video-placeholder">
               <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
               <span class="video-label">Нажмите для воспроизведения</span>
             </div>
           </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/28be5e0a54d98f71bcddfd7a598d711c/?p=4GIjEdXaSogHXJgP7mJLZg">
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/28be5e0a54d98f71bcddfd7a598d711c/?p=4GIjEdXaSogHXJgP7mJLZg" data-video-id="28be5e0a54d98f71bcddfd7a598d711c">
+            <button class="video-close-btn" title="Закрыть видео">✕</button>
             <div class="video-placeholder">
               <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
               <span class="video-label">Нажмите для воспроизведения</span>
             </div>
           </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/bd78e163cba33cce877e7f48e915617e/?p=aVvra1hDsSV1cctkG2qLMg">
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/bd78e163cba33cce877e7f48e915617e/?p=aVvra1hDsSV1cctkG2qLMg" data-video-id="bd78e163cba33cce877e7f48e915617e">
+            <button class="video-close-btn" title="Закрыть видео">✕</button>
             <div class="video-placeholder">
               <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
               <span class="video-label">Нажмите для воспроизведения</span>
             </div>
           </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/20a2955f0d83dd3fdf0037a62a1ec29c/?p=zE4LFsrPCiJFT8kHBUWDug">
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/20a2955f0d83dd3fdf0037a62a1ec29c/?p=zE4LFsrPCiJFT8kHBUWDug" data-video-id="20a2955f0d83dd3fdf0037a62a1ec29c">
+            <button class="video-close-btn" title="Закрыть видео">✕</button>
             <div class="video-placeholder">
               <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
               <span class="video-label">Нажмите для воспроизведения</span>
             </div>
           </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/381475147b7b25520f39f230a7e2cc26/?p=IU2SYBmDXggp0ZvfiObwOQ">
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/381475147b7b25520f39f230a7e2cc26/?p=IU2SYBmDXggp0ZvfiObwOQ" data-video-id="381475147b7b25520f39f230a7e2cc26">
+            <button class="video-close-btn" title="Закрыть видео">✕</button>
             <div class="video-placeholder">
               <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
               <span class="video-label">Нажмите для воспроизведения</span>
             </div>
           </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/eb04f262027b3c6aae4f49da941d19a0/?p=GHZZB8G7lMEnSH4Gb3ci4A">
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/eb04f262027b3c6aae4f49da941d19a0/?p=GHZZB8G7lMEnSH4Gb3ci4A" data-video-id="eb04f262027b3c6aae4f49da941d19a0">
+            <button class="video-close-btn" title="Закрыть видео">✕</button>
             <div class="video-placeholder">
               <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
               <span class="video-label">Нажмите для воспроизведения</span>
             </div>
           </div>
-          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/e391501e3293aa083835e7502802e877/?p=GTwixZTvedblKHHZkjraTw">
+          <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/e391501e3293aa083835e7502802e877/?p=GTwixZTvedblKHHZkjraTw" data-video-id="e391501e3293aa083835e7502802e877">
+            <button class="video-close-btn" title="Закрыть видео">✕</button>
             <div class="video-placeholder">
               <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
               <span class="video-label">Нажмите для воспроизведения</span>
@@ -1801,43 +1900,43 @@
 
         <div class="review-images-grid">
           <div class="review-img-card reveal" data-gallery="reviews" data-index="0">
-            <img src="reviews/1.jpg" alt="Отзыв клиента Лилии Ромашиной 1">
+            <img src="reviews/1.jpg" alt="Отзыв клиента Лилии Ромашиной 1" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
           <div class="review-img-card reveal" data-gallery="reviews" data-index="1">
-            <img src="reviews/2.jpg" alt="Отзыв клиента Лилии Ромашиной 2">
+            <img src="reviews/2.jpg" alt="Отзыв клиента Лилии Ромашиной 2" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
           <div class="review-img-card reveal" data-gallery="reviews" data-index="2">
-            <img src="reviews/3.jpg" alt="Отзыв клиента Лилии Ромашиной 3">
+            <img src="reviews/3.jpg" alt="Отзыв клиента Лилии Ромашиной 3" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
           <div class="review-img-card reveal" data-gallery="reviews" data-index="3">
-            <img src="reviews/4.jpg" alt="Отзыв клиента Лилии Ромашиной 4">
+            <img src="reviews/4.jpg" alt="Отзыв клиента Лилии Ромашиной 4" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
           <div class="review-img-card reveal" data-gallery="reviews" data-index="4">
-            <img src="reviews/5.jpg" alt="Отзыв клиента Лилии Ромашиной 5">
+            <img src="reviews/5.jpg" alt="Отзыв клиента Лилии Ромашиной 5" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
           <div class="review-img-card reveal" data-gallery="reviews" data-index="5">
-            <img src="reviews/6.jpg" alt="Отзыв клиента Лилии Ромашиной 6">
+            <img src="reviews/6.jpg" alt="Отзыв клиента Лилии Ромашиной 6" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
           <div class="review-img-card reveal" data-gallery="reviews" data-index="6">
-            <img src="reviews/7.jpg" alt="Отзыв клиента Лилии Ромашиной 7">
+            <img src="reviews/7.jpg" alt="Отзыв клиента Лилии Ромашиной 7" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
           <div class="review-img-card reveal" data-gallery="reviews" data-index="7">
-            <img src="reviews/8.jpg" alt="Отзыв клиента Лилии Ромашиной 8">
+            <img src="reviews/8.jpg" alt="Отзыв клиента Лилии Ромашиной 8" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
           <div class="review-img-card reveal" data-gallery="reviews" data-index="8">
-            <img src="reviews/9.jpg" alt="Отзыв клиента Лилии Ромашиной 9">
+            <img src="reviews/9.jpg" alt="Отзыв клиента Лилии Ромашиной 9" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
           <div class="review-img-card reveal" data-gallery="reviews" data-index="9">
-            <img src="reviews/10.jpg" alt="Отзыв клиента Лилии Ромашиной 10">
+            <img src="reviews/10.jpg" alt="Отзыв клиента Лилии Ромашиной 10" loading="lazy" decoding="async">
             <div class="review-img-overlay"><span>🔍</span></div>
           </div>
         </div>
@@ -1850,7 +1949,7 @@
       <div class="container">
         <div class="signup-inner">
           <div class="signup-photo reveal">
-            <img src="img/3.jpg" alt="Запись на консультацию к Лилии Ромашиной — проводнику высоких энергий">
+            <img src="img/3.jpg" alt="Запись на консультацию к Лилии Ромашиной — проводнику высоких энергий" loading="lazy" decoding="async">
           </div>
 
           <div class="signup-form-wrap reveal">
@@ -1964,9 +2063,10 @@
   <script>
     // ===== STICKY HEADER =====
     const header = document.getElementById('header');
+    let lastScroll = 0;
     window.addEventListener('scroll', () => {
       header.classList.toggle('scrolled', window.scrollY > 60);
-    });
+    }, { passive: true });
 
     // ===== BURGER MENU =====
     const burger = document.getElementById('burger');
@@ -1995,26 +2095,96 @@
           revealObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
+    // ===== STOP VIDEO HELPER =====
+    function stopVideo(card) {
+      if (!card || !card.classList.contains('playing')) return;
+      var iframe = card.querySelector('iframe');
+      if (iframe) {
+        // Send stop command to Rutube player before removing
+        try {
+          iframe.contentWindow.postMessage(JSON.stringify({type:'player:stop', data:{}}), '*');
+        } catch(e) {}
+        // Small delay to let stop command process, then remove
+        setTimeout(function() { iframe.remove(); }, 50);
+      }
+      var ph = card.querySelector('.video-placeholder');
+      if (ph) ph.style.display = '';
+      card.classList.remove('playing');
+    }
+
+    // ===== LOAD VIDEO THUMBNAILS FROM RUTUBE API =====
+    (function loadVideoThumbnails() {
+      document.querySelectorAll('.video-card[data-video-id]').forEach(function(card) {
+        var videoId = card.getAttribute('data-video-id');
+        if (!videoId) return;
+
+        // Fetch thumbnail URL from Rutube API (returns static JPEG URL)
+        fetch('https://rutube.ru/api/video/' + videoId + '/', {
+          method: 'GET'
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data && data.thumbnail_url) {
+            addThumbToCard(card, data.thumbnail_url);
+          }
+        })
+        .catch(function() {
+          // API failed — leave gradient placeholder, no animated previews
+        });
+      });
+
+      function addThumbToCard(card, url) {
+        var placeholder = card.querySelector('.video-placeholder');
+        if (!placeholder) return;
+
+        var img = document.createElement('img');
+        img.className = 'video-thumb';
+        img.alt = 'Превью видео';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.src = url;
+        img.onload = function() {
+          placeholder.insertBefore(img, placeholder.firstChild);
+          placeholder.classList.add('has-thumb');
+        };
+        img.onerror = function() {
+          // Image failed to load — keep gradient placeholder
+          img.remove();
+        };
+      }
+    })();
+
+    // ===== VIDEO CLOSE BUTTON =====
+    document.querySelectorAll('.video-close-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var card = this.closest('.video-card');
+        stopVideo(card);
+      });
+    });
+
     // ===== VIDEO CLICK-TO-PLAY =====
-    document.querySelectorAll('.video-card').forEach(card => {
-      card.addEventListener('click', function() {
+    document.querySelectorAll('.video-card').forEach(function(card) {
+      card.addEventListener('click', function(e) {
+        // Don't trigger play if clicking close button
+        if (e.target.closest('.video-close-btn')) return;
         if (this.classList.contains('playing')) return;
 
-        document.querySelectorAll('.video-card.playing').forEach(other => {
-          const iframe = other.querySelector('iframe');
-          if (iframe) iframe.remove();
-          other.querySelector('.video-placeholder').style.display = '';
-          other.classList.remove('playing');
+        // Stop all other playing videos
+        document.querySelectorAll('.video-card.playing').forEach(function(other) {
+          stopVideo(other);
         });
 
-        const embedUrl = this.getAttribute('data-embed');
-        const iframe = document.createElement('iframe');
+        var embedUrl = this.getAttribute('data-embed');
+        if (!embedUrl) return;
+
+        var iframe = document.createElement('iframe');
         iframe.src = embedUrl;
-        iframe.setAttribute('allow', 'autoplay');
+        iframe.setAttribute('allow', 'clipboard-write');
         iframe.setAttribute('allowfullscreen', '');
         iframe.setAttribute('frameborder', '0');
         this.appendChild(iframe);
@@ -2022,27 +2192,68 @@
       });
     });
 
+    // ===== LISTEN FOR VIDEO END (postMessage from Rutube) =====
+    window.addEventListener('message', function(event) {
+      try {
+        var raw = event.data;
+        var data;
+        if (typeof raw === 'string') {
+          // Skip non-JSON strings
+          if (raw.charAt(0) !== '{') return;
+          data = JSON.parse(raw);
+        } else {
+          data = raw;
+        }
+        if (!data || !data.type) return;
+
+        var shouldStop = false;
+
+        // player:changeState with state 'stopped' = video playback ended
+        if (data.type === 'player:changeState' && data.data && data.data.state === 'stopped') {
+          shouldStop = true;
+        }
+        // player:playComplete = video + ads finished, final screen
+        if (data.type === 'player:playComplete') {
+          shouldStop = true;
+        }
+
+        if (shouldStop) {
+          // Find which iframe sent this message
+          document.querySelectorAll('.video-card.playing iframe').forEach(function(iframe) {
+            var match = false;
+            try { match = (iframe.contentWindow === event.source); } catch(e) {}
+            if (match) {
+              var card = iframe.closest('.video-card');
+              stopVideo(card);
+            }
+          });
+        }
+      } catch(e) {
+        // Not a valid message, ignore
+      }
+    });
+
     // ===== LIGHTBOX =====
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const lightboxClose = document.getElementById('lightboxClose');
-    const lightboxPrev = document.getElementById('lightboxPrev');
-    const lightboxNext = document.getElementById('lightboxNext');
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImg = document.getElementById('lightboxImg');
+    var lightboxClose = document.getElementById('lightboxClose');
+    var lightboxPrev = document.getElementById('lightboxPrev');
+    var lightboxNext = document.getElementById('lightboxNext');
 
-    let currentGallery = [];
-    let currentIndex = 0;
+    var currentGallery = [];
+    var currentIndex = 0;
 
-    const galleries = {};
-    document.querySelectorAll('[data-gallery]').forEach(el => {
-      const name = el.getAttribute('data-gallery');
+    var galleries = {};
+    document.querySelectorAll('[data-gallery]').forEach(function(el) {
+      var name = el.getAttribute('data-gallery');
       if (!galleries[name]) galleries[name] = [];
       galleries[name].push(el.querySelector('img').src);
     });
 
-    document.querySelectorAll('[data-gallery]').forEach(el => {
-      el.addEventListener('click', () => {
-        const name = el.getAttribute('data-gallery');
-        const index = parseInt(el.getAttribute('data-index'));
+    document.querySelectorAll('[data-gallery]').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var name = this.getAttribute('data-gallery');
+        var index = parseInt(this.getAttribute('data-index'));
         currentGallery = galleries[name];
         currentIndex = index;
         showLightboxImage();
@@ -2056,7 +2267,7 @@
     }
 
     lightboxClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+    lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
 
     function closeLightbox() {
       lightbox.classList.remove('open');
@@ -2064,19 +2275,19 @@
       lightboxImg.src = '';
     }
 
-    lightboxPrev.addEventListener('click', (e) => {
+    lightboxPrev.addEventListener('click', function(e) {
       e.stopPropagation();
       currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
       showLightboxImage();
     });
 
-    lightboxNext.addEventListener('click', (e) => {
+    lightboxNext.addEventListener('click', function(e) {
       e.stopPropagation();
       currentIndex = (currentIndex + 1) % currentGallery.length;
       showLightboxImage();
     });
 
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', function(e) {
       if (!lightbox.classList.contains('open')) return;
       if (e.key === 'Escape') closeLightbox();
       if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length; showLightboxImage(); }
@@ -2084,7 +2295,7 @@
     });
 
     // ===== INPUT: ИМЯ (только буквы, макс 20) =====
-    const nameInput = document.getElementById('userName');
+    var nameInput = document.getElementById('userName');
     nameInput.addEventListener('input', function() {
       this.value = this.value.replace(/[^a-zA-Zа-яА-ЯёЁ\s\-]/g, '');
       if (this.value.length > 20) {
@@ -2093,10 +2304,10 @@
     });
 
     // ===== INPUT: ТЕЛЕФОН (автоформат) =====
-    const contactInput = document.getElementById('userContact');
+    var contactInput = document.getElementById('userContact');
 
     contactInput.addEventListener('input', function() {
-      let digits = this.value.replace(/\D/g, '');
+      var digits = this.value.replace(/\D/g, '');
 
       if (digits.length > 0 && digits[0] === '8') {
         digits = '7' + digits.slice(1);
@@ -2106,7 +2317,7 @@
         digits = digits.slice(0, 11);
       }
 
-      let formatted = '';
+      var formatted = '';
       if (digits.length === 0) {
         formatted = '';
       } else if (digits.length <= 1) {
@@ -2129,39 +2340,79 @@
     });
 
     // ===== TEXTAREA: счётчик символов =====
-    const messageInput = document.getElementById('userMessage');
-    const charCounter = document.getElementById('charCounter');
+    var messageInput = document.getElementById('userMessage');
+    var charCounter = document.getElementById('charCounter');
 
     messageInput.addEventListener('input', function() {
-      const len = this.value.length;
+      var len = this.value.length;
       charCounter.textContent = len + ' / 1000';
       charCounter.classList.remove('warn', 'limit');
       if (len >= 1000) charCounter.classList.add('limit');
       else if (len >= 800) charCounter.classList.add('warn');
     });
 
-        // ===== FORM HANDLING =====
-    const form = document.getElementById('leadForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const formSuccess = document.getElementById('formSuccess');
-    const nameError = document.getElementById('nameError');
-    const contactError = document.getElementById('contactError');
+    // ===== FORM HANDLING — INSTANT SUBMIT =====
+    var form = document.getElementById('leadForm');
+    var submitBtn = document.getElementById('submitBtn');
+    var formSuccess = document.getElementById('formSuccess');
+    var nameError = document.getElementById('nameError');
+    var contactError = document.getElementById('contactError');
 
     function showError(el) { el.style.display = 'block'; }
     function hideError(el) { el.style.display = 'none'; }
 
-    form.addEventListener('submit', async (e) => {
+    // Telegram config
+    var BOT_TOKEN = '8782195281:AAGM0yEBGY_2yIDK8XRjleyCi_ljEwN8uow';
+    var CHAT_ID = '250070109';
+    var TG_URL = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
+
+    function sendToTelegram(payload, retries) {
+      retries = retries || 0;
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function() { controller.abort(); }, 10000);
+
+      fetch(TG_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        signal: controller.signal,
+        keepalive: true
+      })
+      .then(function(response) {
+        clearTimeout(timeoutId);
+        return response.json();
+      })
+      .then(function(result) {
+        if (result.ok) {
+          console.log('Telegram: сообщение доставлено');
+        } else {
+          console.warn('Telegram ответ:', result.description);
+          if (retries < 2) {
+            setTimeout(function() { sendToTelegram(payload, retries + 1); }, 2000);
+          }
+        }
+      })
+      .catch(function(err) {
+        clearTimeout(timeoutId);
+        console.warn('Telegram сеть:', err.message);
+        if (retries < 2) {
+          setTimeout(function() { sendToTelegram(payload, retries + 1); }, 3000);
+        }
+      });
+    }
+
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
 
       hideError(nameError);
       hideError(contactError);
 
-      const name = nameInput.value.trim();
-      const contactRaw = contactInput.value.trim();
-      const message = messageInput.value.trim();
-      const digits = contactRaw.replace(/\D/g, '');
+      var name = nameInput.value.trim();
+      var contactRaw = contactInput.value.trim();
+      var message = messageInput.value.trim();
+      var digits = contactRaw.replace(/\D/g, '');
 
-      let isValid = true;
+      var isValid = true;
 
       if (name.length < 2 || name.length > 20 || !/[a-zA-Zа-яА-ЯёЁ]{2,}/.test(name)) {
         showError(nameError);
@@ -2175,63 +2426,40 @@
 
       if (!isValid) return;
 
-      const normalizedPhone = '+7' + digits.slice(1);
+      var normalizedPhone = '+7' + digits.slice(1);
 
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Отправка...';
+      // === INSTANT: show success right away ===
+      form.style.display = 'none';
+      formSuccess.classList.add('show');
 
-      const BOT_TOKEN = '8782195281:AAGM0yEBGY_2yIDK8XRjleyCi_ljEwN8uow';
-      const CHAT_ID = '5569439365';
+      // === Build message text ===
+      var text = '\u{1F514} Новая заявка с сайта!\n\n'
+        + '\u{1F464} Имя: ' + name + '\n'
+        + '\u{1F4F1} Телефон: ' + normalizedPhone + '\n'
+        + '\u{1F4AC} Сообщение: ' + (message || 'Не указано');
 
-      const text = '🔔 Новая заявка с сайта!\n\n'
-        + '👤 Имя: ' + name + '\n'
-        + '📱 Телефон: ' + normalizedPhone + '\n'
-        + '💬 Сообщение: ' + (message || 'Не указано');
+      var payload = JSON.stringify({
+        chat_id: CHAT_ID,
+        text: text
+      });
 
-      try {
-        const response = await fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: CHAT_ID,
-            text: text
-          })
-        });
-
-        const result = await response.json();
-
-        if (result.ok) {
-          console.log('✅ Telegram: сообщение отправлено!');
-          form.style.display = 'none';
-          formSuccess.classList.add('show');
-        } else {
-          console.error('❌ Telegram ошибка:', result.description);
-          alert('Ошибка отправки: ' + result.description + '\n\nУбедитесь, что вы нажали /start в чате с ботом.');
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Отправить заявку';
-        }
-
-      } catch (err) {
-        console.error('❌ Сетевая ошибка:', err);
-        alert('Ошибка сети. Проверьте интернет-соединение.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Отправить заявку';
-      }
+      // === Send in background (fire-and-forget with auto-retry) ===
+      sendToTelegram(payload, 0);
     });
 
     // ===== ACTIVE NAV HIGHLIGHT =====
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('nav a');
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('nav a');
 
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(section => {
+    window.addEventListener('scroll', function() {
+      var current = '';
+      sections.forEach(function(section) {
         if (scrollY >= section.offsetTop - 120) current = section.getAttribute('id');
       });
-      navLinks.forEach(link => {
-        link.style.color = link.getAttribute('href') === `#${current}` ? '#9b6b9e' : '';
+      navLinks.forEach(function(link) {
+        link.style.color = link.getAttribute('href') === '#' + current ? '#9b6b9e' : '';
       });
-    });
+    }, { passive: true });
   </script>
 
 </body>
