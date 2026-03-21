@@ -84,11 +84,7 @@
       min-height: auto;
     }
 
-    /* ===== content-visibility: browser skips rendering of off-screen sections ===== */
-    .cv-auto {
-      content-visibility: auto;
-      contain-intrinsic-size: auto 800px;
-    }
+    /* cv-auto removed — breaks scroll positioning on mobile */
 
     /* Animations — defined but paused by default for perf */
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
@@ -439,7 +435,7 @@
     </section>
 
     <!-- ABOUT — cv-auto: browser skips rendering until scrolled near -->
-    <section id="about" class="cv-auto">
+    <section id="about">
       <div class="container">
         <div class="about-grid">
           <div class="about-text reveal">
@@ -469,7 +465,7 @@
     </section>
 
     <!-- CERTIFICATES -->
-    <section id="certificates" class="cv-auto">
+    <section id="certificates">
       <div class="container section-center">
         <span class="section-label reveal">Сертификаты</span>
         <h2 class="section-title reveal">Подтверждение квалификации</h2>
@@ -488,7 +484,7 @@
     </section>
 
     <!-- GIFT -->
-    <section id="gift" class="cv-auto">
+    <section id="gift">
       <div class="container">
         <div class="gift-inner reveal">
           <div class="gift-icon-wrap" id="giftIcon">🎁</div>
@@ -502,7 +498,7 @@
     </section>
 
     <!-- AUDIENCE -->
-    <section id="audience" class="cv-auto">
+    <section id="audience">
       <div class="container section-center">
         <span class="section-label reveal">Кому подходит</span>
         <h2 class="section-title reveal">Узнаёшь себя?</h2>
@@ -519,7 +515,7 @@
     </section>
 
     <!-- SERVICES -->
-    <section id="services" class="cv-auto">
+    <section id="services">
       <div class="container">
         <div class="section-center">
           <span class="section-label reveal">Что я предлагаю</span>
@@ -539,7 +535,7 @@
     </section>
 
     <!-- RESULTS -->
-    <section id="results" class="cv-auto">
+    <section id="results">
       <div class="container section-center">
         <span class="section-label reveal">Результаты</span>
         <h2 class="section-title reveal">Что ты получишь, пройдя этот путь</h2>
