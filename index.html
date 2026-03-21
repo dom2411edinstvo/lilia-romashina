@@ -1214,9 +1214,11 @@
       border-radius: 12px;
       color: #2d2a3e;
       font-family: 'Montserrat', system-ui, sans-serif;
-      font-size: 0.95rem;
+      font-size: 16px;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
       outline: none;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     .form-group input:focus,
@@ -1259,6 +1261,10 @@
       background: linear-gradient(135deg, #9b6b9e, #b388b6);
       color: #fff;
       transition: all 0.4s ease;
+      -webkit-appearance: none;
+      appearance: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     .btn-submit:hover {
@@ -1960,19 +1966,19 @@
             <form id="leadForm" novalidate>
               <div class="form-group">
                 <label for="userName">Твоё имя *</label>
-                <input type="text" id="userName" name="name" placeholder="Как тебя зовут?" required minlength="2" maxlength="20" autocomplete="name">
+                <input type="text" id="userName" name="name" placeholder="Как тебя зовут?" required minlength="2" maxlength="20" autocomplete="name" inputmode="text" enterkeyhint="next">
                 <div class="form-error" id="nameError">Введи имя (только буквы, от 2 до 20 символов)</div>
               </div>
 
               <div class="form-group">
                 <label for="userContact">Телефон *</label>
-                <input type="tel" id="userContact" name="contact" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
+                <input type="tel" id="userContact" name="contact" placeholder="+7 (___) ___-__-__" required autocomplete="tel" inputmode="tel" enterkeyhint="next">
                 <div class="form-error" id="contactError">Введи корректный номер телефона</div>
               </div>
 
               <div class="form-group">
                 <label for="userMessage">Сообщение</label>
-                <textarea id="userMessage" name="message" placeholder="Расскажи коротко, что тебя привело сюда... (необязательно)" maxlength="1000"></textarea>
+                <textarea id="userMessage" name="message" placeholder="Расскажи коротко, что тебя привело сюда... (необязательно)" maxlength="1000" enterkeyhint="send"></textarea>
                 <div class="char-counter" id="charCounter">0 / 1000</div>
               </div>
 
@@ -2064,7 +2070,7 @@
     // ===== STICKY HEADER =====
     const header = document.getElementById('header');
     let lastScroll = 0;
-    window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', function() {
       header.classList.toggle('scrolled', window.scrollY > 60);
     }, { passive: true });
 
@@ -2073,14 +2079,14 @@
     const mobileNav = document.getElementById('mobileNav');
     const mobileLinks = document.querySelectorAll('.mobile-link');
 
-    burger.addEventListener('click', () => {
+    burger.addEventListener('click', function() {
       burger.classList.toggle('active');
       mobileNav.classList.toggle('open');
       document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
     });
 
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
+    mobileLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
         burger.classList.remove('active');
         mobileNav.classList.remove('open');
         document.body.style.overflow = '';
@@ -2088,8 +2094,8 @@
     });
 
     // ===== SCROLL REVEAL =====
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
           revealObserver.unobserve(entry.target);
@@ -2097,18 +2103,16 @@
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
 
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
 
     // ===== STOP VIDEO HELPER =====
     function stopVideo(card) {
       if (!card || !card.classList.contains('playing')) return;
       var iframe = card.querySelector('iframe');
       if (iframe) {
-        // Send stop command to Rutube player before removing
         try {
           iframe.contentWindow.postMessage(JSON.stringify({type:'player:stop', data:{}}), '*');
         } catch(e) {}
-        // Small delay to let stop command process, then remove
         setTimeout(function() { iframe.remove(); }, 50);
       }
       var ph = card.querySelector('.video-placeholder');
@@ -2122,25 +2126,19 @@
         var videoId = card.getAttribute('data-video-id');
         if (!videoId) return;
 
-        // Fetch thumbnail URL from Rutube API (returns static JPEG URL)
-        fetch('https://rutube.ru/api/video/' + videoId + '/', {
-          method: 'GET'
-        })
+        fetch('https://rutube.ru/api/video/' + videoId + '/', { method: 'GET' })
         .then(function(r) { return r.json(); })
         .then(function(data) {
           if (data && data.thumbnail_url) {
             addThumbToCard(card, data.thumbnail_url);
           }
         })
-        .catch(function() {
-          // API failed — leave gradient placeholder, no animated previews
-        });
+        .catch(function() {});
       });
 
       function addThumbToCard(card, url) {
         var placeholder = card.querySelector('.video-placeholder');
         if (!placeholder) return;
-
         var img = document.createElement('img');
         img.className = 'video-thumb';
         img.alt = 'Превью видео';
@@ -2151,10 +2149,7 @@
           placeholder.insertBefore(img, placeholder.firstChild);
           placeholder.classList.add('has-thumb');
         };
-        img.onerror = function() {
-          // Image failed to load — keep gradient placeholder
-          img.remove();
-        };
+        img.onerror = function() { img.remove(); };
       }
     })();
 
@@ -2170,11 +2165,9 @@
     // ===== VIDEO CLICK-TO-PLAY =====
     document.querySelectorAll('.video-card').forEach(function(card) {
       card.addEventListener('click', function(e) {
-        // Don't trigger play if clicking close button
         if (e.target.closest('.video-close-btn')) return;
         if (this.classList.contains('playing')) return;
 
-        // Stop all other playing videos
         document.querySelectorAll('.video-card.playing').forEach(function(other) {
           stopVideo(other);
         });
@@ -2192,33 +2185,22 @@
       });
     });
 
-    // ===== LISTEN FOR VIDEO END (postMessage from Rutube) =====
+    // ===== LISTEN FOR VIDEO END =====
     window.addEventListener('message', function(event) {
       try {
         var raw = event.data;
         var data;
         if (typeof raw === 'string') {
-          // Skip non-JSON strings
           if (raw.charAt(0) !== '{') return;
           data = JSON.parse(raw);
         } else {
           data = raw;
         }
         if (!data || !data.type) return;
-
         var shouldStop = false;
-
-        // player:changeState with state 'stopped' = video playback ended
-        if (data.type === 'player:changeState' && data.data && data.data.state === 'stopped') {
-          shouldStop = true;
-        }
-        // player:playComplete = video + ads finished, final screen
-        if (data.type === 'player:playComplete') {
-          shouldStop = true;
-        }
-
+        if (data.type === 'player:changeState' && data.data && data.data.state === 'stopped') shouldStop = true;
+        if (data.type === 'player:playComplete') shouldStop = true;
         if (shouldStop) {
-          // Find which iframe sent this message
           document.querySelectorAll('.video-card.playing iframe').forEach(function(iframe) {
             var match = false;
             try { match = (iframe.contentWindow === event.source); } catch(e) {}
@@ -2228,9 +2210,7 @@
             }
           });
         }
-      } catch(e) {
-        // Not a valid message, ignore
-      }
+      } catch(e) {}
     });
 
     // ===== LIGHTBOX =====
@@ -2306,7 +2286,9 @@
     // ===== INPUT: ТЕЛЕФОН (автоформат) =====
     var contactInput = document.getElementById('userContact');
 
-    contactInput.addEventListener('input', function() {
+    contactInput.addEventListener('input', function(e) {
+      var cursorPos = this.selectionStart;
+      var oldVal = this.value;
       var digits = this.value.replace(/\D/g, '');
 
       if (digits.length > 0 && digits[0] === '8') {
@@ -2339,6 +2321,24 @@
       if (this.value === '') this.value = '+7';
     });
 
+    // Handle paste on mobile
+    contactInput.addEventListener('paste', function(e) {
+      var self = this;
+      setTimeout(function() {
+        var digits = self.value.replace(/\D/g, '');
+        if (digits.length > 0 && digits[0] === '8') digits = '7' + digits.slice(1);
+        if (digits.length > 11) digits = digits.slice(0, 11);
+        var formatted = '';
+        if (digits.length === 0) { formatted = ''; }
+        else if (digits.length <= 1) { formatted = '+' + digits; }
+        else if (digits.length <= 4) { formatted = '+' + digits[0] + ' (' + digits.slice(1); }
+        else if (digits.length <= 7) { formatted = '+' + digits[0] + ' (' + digits.slice(1, 4) + ') ' + digits.slice(4); }
+        else if (digits.length <= 9) { formatted = '+' + digits[0] + ' (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7); }
+        else { formatted = '+' + digits[0] + ' (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7, 9) + '-' + digits.slice(9, 11); }
+        self.value = formatted;
+      }, 0);
+    });
+
     // ===== TEXTAREA: счётчик символов =====
     var messageInput = document.getElementById('userMessage');
     var charCounter = document.getElementById('charCounter');
@@ -2351,58 +2351,131 @@
       else if (len >= 800) charCounter.classList.add('warn');
     });
 
-    // ===== FORM HANDLING — INSTANT SUBMIT =====
+    // ===== TELEGRAM CONFIG =====
+    var BOT_TOKEN = '8782195281:AAGM0yEBGY_2yIDK8XRjleyCi_ljEwN8uow';
+    var CHAT_ID = '5569439365';
+    var TG_API = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
+
+    // ===== ROBUST TELEGRAM SENDER (MOBILE-OPTIMIZED) =====
+    // Uses 3 methods: sendBeacon (primary), fetch (secondary), XHR (fallback)
+    function sendToTelegram(text) {
+      var payload = JSON.stringify({
+        chat_id: CHAT_ID,
+        text: text,
+        parse_mode: ''
+      });
+
+      var sent = false;
+
+      // === METHOD 1: navigator.sendBeacon (most reliable on mobile) ===
+      // Survives page changes, DOM updates, screen lock, tab switches
+      if (navigator.sendBeacon) {
+        try {
+          var blob = new Blob([payload], { type: 'application/json' });
+          sent = navigator.sendBeacon(TG_API, blob);
+          if (sent) {
+            console.log('[TG] sendBeacon: queued');
+          }
+        } catch (e) {
+          console.warn('[TG] sendBeacon error:', e);
+        }
+      }
+
+      // === METHOD 2: fetch without AbortController (backup) ===
+      // No timeout/abort — let the browser handle it naturally
+      try {
+        fetch(TG_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          keepalive: true
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          if (result && result.ok) {
+            console.log('[TG] fetch: delivered');
+          } else {
+            console.warn('[TG] fetch response:', result && result.description);
+            // Retry once via XHR
+            xhrFallback(payload);
+          }
+        })
+        .catch(function(err) {
+          console.warn('[TG] fetch error:', err.message);
+          // If sendBeacon didn't work either, try XHR
+          if (!sent) {
+            xhrFallback(payload);
+          }
+        });
+      } catch (e) {
+        // fetch not supported — use XHR
+        if (!sent) {
+          xhrFallback(payload);
+        }
+      }
+    }
+
+    // === METHOD 3: XMLHttpRequest fallback (for older mobile browsers) ===
+    function xhrFallback(payload) {
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', TG_API, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.timeout = 30000; // 30 sec for slow mobile networks
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            console.log('[TG] XHR: delivered');
+          } else {
+            console.warn('[TG] XHR status:', xhr.status);
+            // Last resort: try GET via image pixel
+            imgFallback(payload);
+          }
+        };
+        xhr.onerror = function() {
+          console.warn('[TG] XHR error');
+          imgFallback(payload);
+        };
+        xhr.ontimeout = function() {
+          console.warn('[TG] XHR timeout');
+          imgFallback(payload);
+        };
+        xhr.send(payload);
+      } catch (e) {
+        imgFallback(payload);
+      }
+    }
+
+    // === METHOD 4: Image pixel GET request (ultimate fallback) ===
+    // Works even when fetch/XHR are blocked; Telegram API supports GET
+    function imgFallback(payload) {
+      try {
+        var data = JSON.parse(payload);
+        var url = TG_API + '?chat_id=' + encodeURIComponent(data.chat_id)
+          + '&text=' + encodeURIComponent(data.text);
+        var img = new Image();
+        img.src = url;
+        console.log('[TG] image fallback fired');
+      } catch (e) {
+        console.error('[TG] all methods failed');
+      }
+    }
+
+    // ===== FORM HANDLING =====
     var form = document.getElementById('leadForm');
     var submitBtn = document.getElementById('submitBtn');
     var formSuccess = document.getElementById('formSuccess');
     var nameError = document.getElementById('nameError');
     var contactError = document.getElementById('contactError');
+    var isSubmitting = false; // Prevent double-tap on mobile
 
     function showError(el) { el.style.display = 'block'; }
     function hideError(el) { el.style.display = 'none'; }
 
-    // Telegram config
-    var BOT_TOKEN = '8782195281:AAGM0yEBGY_2yIDK8XRjleyCi_ljEwN8uow';
-    var CHAT_ID = '5569439365';
-    var TG_URL = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
-
-    function sendToTelegram(payload, retries) {
-      retries = retries || 0;
-      var controller = new AbortController();
-      var timeoutId = setTimeout(function() { controller.abort(); }, 10000);
-
-      fetch(TG_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload,
-        signal: controller.signal,
-        keepalive: true
-      })
-      .then(function(response) {
-        clearTimeout(timeoutId);
-        return response.json();
-      })
-      .then(function(result) {
-        if (result.ok) {
-          console.log('Telegram: сообщение доставлено');
-        } else {
-          console.warn('Telegram ответ:', result.description);
-          if (retries < 2) {
-            setTimeout(function() { sendToTelegram(payload, retries + 1); }, 2000);
-          }
-        }
-      })
-      .catch(function(err) {
-        clearTimeout(timeoutId);
-        console.warn('Telegram сеть:', err.message);
-        if (retries < 2) {
-          setTimeout(function() { sendToTelegram(payload, retries + 1); }, 3000);
-        }
-      });
-    }
-
     form.addEventListener('submit', function(e) {
       e.preventDefault();
+
+      // Prevent double submission (common on mobile touch)
+      if (isSubmitting) return;
 
       hideError(nameError);
       hideError(contactError);
@@ -2416,35 +2489,40 @@
 
       if (name.length < 2 || name.length > 20 || !/[a-zA-Zа-яА-ЯёЁ]{2,}/.test(name)) {
         showError(nameError);
+        nameInput.focus();
         isValid = false;
       }
 
       if (digits.length < 11) {
         showError(contactError);
+        if (isValid) contactInput.focus();
         isValid = false;
       }
 
       if (!isValid) return;
 
-      var normalizedPhone = '+7' + digits.slice(1);
+      // Lock submission
+      isSubmitting = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправка...';
 
-      // === INSTANT: show success right away ===
-      form.style.display = 'none';
-      formSuccess.classList.add('show');
+      var normalizedPhone = '+' + digits;
 
-      // === Build message text ===
+      // Build message text
       var text = '\u{1F514} Новая заявка с сайта!\n\n'
         + '\u{1F464} Имя: ' + name + '\n'
         + '\u{1F4F1} Телефон: ' + normalizedPhone + '\n'
         + '\u{1F4AC} Сообщение: ' + (message || 'Не указано');
 
-      var payload = JSON.stringify({
-        chat_id: CHAT_ID,
-        text: text
-      });
+      // Send via all available methods (fire-and-forget)
+      sendToTelegram(text);
 
-      // === Send in background (fire-and-forget with auto-retry) ===
-      sendToTelegram(payload, 0);
+      // Show success immediately (don't wait for network)
+      // Small delay so user sees "Отправка..." state
+      setTimeout(function() {
+        form.style.display = 'none';
+        formSuccess.classList.add('show');
+      }, 300);
     });
 
     // ===== ACTIVE NAV HIGHLIGHT =====
