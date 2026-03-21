@@ -307,27 +307,46 @@
       background-size: 400px 100%;
       animation: thumbShimmer 1.5s ease-in-out infinite;
     }
-    /* Playing state */
+    /* Video Card — Playing State (inline, in place) */
     .video-card.playing {
       cursor: default;
+      z-index: 10;
     }
     .video-card.playing .video-card-thumb,
     .video-card.playing .video-play-btn,
-    .video-card.playing .video-card-thumb-loading {
-      display: none;
-    }
-    .video-card.playing::after {
-      display: none;
-    }
-    .video-card iframe {
+    .video-card.playing .video-card-thumb-loading,
+    .video-card.playing .video-card-fallback { display: none; }
+    .video-card.playing::after { display: none; }
+    /* Gradient overlay to hide video title at top */
+    .video-card.playing::before {
+      content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      z-index: 5;
+      top: 0; left: 0; right: 0;
+      height: 48px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+      z-index: 6;
+      pointer-events: none;
+      border-radius: 16px 16px 0 0;
     }
+    .video-card.playing:hover { transform: none; box-shadow: 0 8px 32px rgba(155,107,158,0.25); }
+    .video-card iframe {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none; z-index: 4; border-radius: 16px;
+    }
+    .video-close-btn {
+      position: absolute; top: 6px; right: 6px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(0,0,0,0.7); border: 2px solid rgba(255,255,255,0.5);
+      color: #fff; font-size: 0.9rem;
+      display: none; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 20;
+      transition: background 0.3s ease, transform 0.3s ease;
+      line-height: 1; padding: 0; font-family: sans-serif;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+    .video-close-btn:hover { background: rgba(155,107,158,0.9); border-color: #fff; transform: scale(1.15); }
+    .video-card.playing .video-close-btn { display: flex; }
     /* Fallback when thumb fails */
     .video-card-fallback {
       position: absolute;
@@ -401,21 +420,109 @@
     .form-success p { font-size: 1rem; color: #4a4260; }
     .form-error { color: #c0392b; font-size: 0.82rem; margin-top: 4px; display: none; }
 
-    /* Contacts — 5 cards */
-    #contacts { background: #faf9f7; padding: 80px 0; }
-    .contacts-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
-    .contact-card { background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; padding: 28px 20px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.03); contain: layout style paint; }
-    .contact-card:hover { box-shadow: 0 8px 30px rgba(155,107,158,0.1); transform: translateY(-4px); }
-    .contact-icon { width: 48px; height: 48px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; }
-    .contact-icon svg { width: 36px; height: 36px; }
-    .contact-icon-emoji { font-size: 2rem; margin-bottom: 14px; display: block; text-align: center; }
-    .contact-card h3 { font-size: 0.95rem; margin-bottom: 8px; color: #1e1b30; }
-    .contact-card a { font-size: 0.88rem; font-weight: 500; word-break: break-word; overflow-wrap: break-word; }
-    .contact-card p { font-size: 0.82rem; color: #8a7fa0; margin-top: 4px; }
+    /* Contacts — 3 cards */
+    #contacts { background: linear-gradient(180deg, #faf9f7 0%, #f5f0fa 50%, #faf9f7 100%); padding: 80px 0; }
+    .contacts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 960px; margin: 0 auto; }
+    .contact-card {
+      background: #fff;
+      border: 1px solid rgba(155,107,158,0.08);
+      border-radius: 20px;
+      padding: 36px 28px;
+      text-align: center;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, #9b6b9e, #c49bc7, #d4af37);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .contact-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(155,107,158,0.14); }
+    .contact-card:hover::before { opacity: 1; }
+    .contact-card-icon {
+      width: 56px; height: 56px;
+      margin: 0 auto 18px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(155,107,158,0.1), rgba(212,175,55,0.06));
+      display: flex; align-items: center; justify-content: center;
+    }
+    .contact-card-icon svg { width: 28px; height: 28px; }
+    .contact-card h3 { font-size: 1.05rem; margin-bottom: 16px; color: #1e1b30; }
+    .contact-main-link {
+      display: block;
+      font-size: 1rem; font-weight: 600;
+      color: #2d2a3e;
+      margin-bottom: 14px;
+      transition: color 0.3s ease;
+    }
+    .contact-main-link:hover { color: #9b6b9e; }
+    .contact-email-link { font-size: 0.88rem; white-space: nowrap; letter-spacing: 0.2px; }
+    .contact-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .contact-badge {
+      display: inline-flex; align-items: center;
+      padding: 5px 14px;
+      background: rgba(155,107,158,0.06);
+      border: 1px solid rgba(155,107,158,0.12);
+      border-radius: 20px;
+      font-size: 0.78rem; color: #6b6380; font-weight: 500;
+    }
+    .contact-note { font-size: 0.8rem; color: #8a7fa0; margin-top: 8px; }
+    .contact-tg-links { display: flex; flex-direction: column; gap: 0; }
+    .contact-tg-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-radius: 12px;
+      transition: background 0.3s ease; text-decoration: none;
+    }
+    .contact-tg-item:hover { background: rgba(155,107,158,0.06); }
+    .contact-tg-item + .contact-tg-item { border-top: 1px solid rgba(155,107,158,0.06); }
+    .contact-tg-name { font-size: 0.9rem; font-weight: 600; color: #2d2a3e; transition: color 0.3s ease; }
+    .contact-tg-item:hover .contact-tg-name { color: #9b6b9e; }
+    .contact-tg-label {
+      font-size: 0.68rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: #9b6b9e;
+      background: rgba(155,107,158,0.08);
+      padding: 3px 10px; border-radius: 10px;
+    }
 
     /* Footer */
-    footer { background: #f3eef8; border-top: 1px solid rgba(155,107,158,0.1); padding: 30px 0; text-align: center; }
-    footer p { font-size: 0.82rem; color: #8a7fa0; }
+    footer { background: linear-gradient(135deg, #1e1b30 0%, #2d2552 50%, #1e1b30 100%); border-top: 2px solid rgba(155,107,158,0.3); padding: 36px 0 28px; text-align: center; }
+    .footer-copy { font-size: 0.82rem; color: rgba(255,255,255,0.45); margin-bottom: 20px; }
+    .footer-dev { padding-top: 18px; border-top: 1px solid rgba(155,107,158,0.15); }
+    .footer-dev-line { font-size: 0.85rem; color: rgba(255,255,255,0.55); margin-bottom: 10px; line-height: 2.2; }
+    .footer-dev-line:last-child { margin-bottom: 0; }
+    .footer-dev-line a { transition: opacity 0.3s ease, box-shadow 0.3s ease; }
+    .footer-dev-line a:hover { opacity: 0.85; }
+    .dev-tg-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      color: #2AABEE; font-weight: 600;
+      background: rgba(42,171,238,0.12); padding: 3px 12px; border-radius: 14px;
+      border: 1px solid rgba(42,171,238,0.3); font-size: 0.85rem;
+    }
+    .dev-tg-link:hover { color: #5BC0F5; background: rgba(42,171,238,0.22); box-shadow: 0 0 12px rgba(42,171,238,0.3); }
+    .dev-tg-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .dev-max-link {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-weight: 800; color: #fff;
+      background: linear-gradient(135deg, #3B7DED, #8B5CF6);
+      padding: 3px 14px; border-radius: 14px;
+      font-size: 0.82rem; letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .dev-max-link:hover { color: #fff; box-shadow: 0 0 16px rgba(139,92,246,0.5); }
+    .dev-vk-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-weight: 600; color: #fff;
+      background: #0077FF; padding: 3px 14px; border-radius: 14px;
+      font-size: 0.82rem;
+    }
+    .dev-vk-link:hover { color: #fff; background: #0066DD; box-shadow: 0 0 14px rgba(0,119,255,0.5); }
+    .dev-vk-link svg { width: 14px; height: 14px; flex-shrink: 0; }
 
     /* Stars */
     .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
@@ -471,6 +578,7 @@
       .reviews-intro-photo { flex: 0 0 150px; height: 150px; }
       .video-play-btn { width: 56px; height: 56px; }
       .video-play-btn svg { width: 20px; height: 20px; }
+      .video-close-btn { width: 26px; height: 26px; font-size: 0.75rem; top: 4px; right: 4px; }
     }
     @media (max-width: 480px) {
       .hero-content h1 { font-size: 1.7rem; }
@@ -485,6 +593,7 @@
       .contacts-grid { grid-template-columns: 1fr; }
       .video-play-btn { width: 48px; height: 48px; }
       .video-play-btn svg { width: 18px; height: 18px; margin-left: 3px; }
+      .video-close-btn { width: 24px; height: 24px; font-size: 0.7rem; top: 4px; right: 4px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -528,6 +637,8 @@
     <button class="lightbox-nav lightbox-next" id="lightboxNext">❯</button>
     <img src="" alt="Просмотр изображения" id="lightboxImg">
   </div>
+
+
 
   <main>
 
@@ -683,15 +794,6 @@
 
         <p class="video-section-label reveal">🎬 Видеоотзывы</p>
 
-        <!--
-          ╔══════════════════════════════════════════════════╗
-          ║  ВИДЕО — LAZY LOAD                              ║
-          ║  Чтобы добавить новое видео, скопируй блок      ║
-          ║  .video-card и замени data-video-id на нужный ID ║
-          ║  RuTube. Параметр data-embed-params можно        ║
-          ║  оставить пустым или указать ?p=TOKEN.           ║
-          ╚══════════════════════════════════════════════════╝
-        -->
         <div class="videos-grid" id="videosGrid">
 
           <div class="video-card reveal" data-video-id="5494bb8b3d84e504c3ad63e6ed93606a" data-embed-params="p=yghWSe1sfMM02ucm9DIIMQ">
@@ -810,7 +912,7 @@
       </div>
     </section>
 
-    <!-- CONTACTS — 5 cards -->
+    <!-- CONTACTS — 3 cards -->
     <section id="contacts">
       <div class="container section-center">
         <span class="section-label reveal">Контакты</span>
@@ -820,56 +922,46 @@
 
         <div class="contacts-grid">
 
-          <!-- Телефон -->
+          <!-- Телефон & Max -->
           <div class="contact-card reveal">
-            <span class="contact-icon-emoji">📞</span>
+            <div class="contact-card-icon">
+              <svg viewBox="0 0 24 24" fill="#9b6b9e"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            </div>
             <h3>Телефон</h3>
-            <a href="tel:+79160607405">+7 916 060 74 05</a>
-            <p>Я живу в Москве</p>
+            <a href="tel:+79160607405" class="contact-main-link">+7 916 060 74 05</a>
+            <div class="contact-badges">
+              <span class="contact-badge">📞 Звонки</span>
+              <span class="contact-badge"><svg viewBox="0 0 48 48" width="14" height="14" style="vertical-align:-1px;margin-right:3px;flex-shrink:0"><defs><linearGradient id="mG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3B7DED"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient></defs><rect width="48" height="48" rx="12" fill="url(#mG)"/><path d="M14 33l3.2-6.4C14.8 24.2 13 21 13 17.5 13 11.7 18 7 24 7s11 4.7 11 10.5S30 28 24 28c-1.6 0-3.1-.3-4.5-.9L14 33Z" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Max</span>
+            </div>
+            <p class="contact-note">📍 Москва</p>
           </div>
 
-          <!-- Telegram личный -->
+          <!-- Telegram: личный + канал -->
           <div class="contact-card reveal">
-            <div class="contact-icon">
+            <div class="contact-card-icon">
               <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg>
             </div>
             <h3>Telegram</h3>
-            <a href="https://t.me/Lilia_lvovna" target="_blank" rel="noopener">@Lilia_lvovna</a>
-            <p>Напиши мне лично</p>
+            <div class="contact-tg-links">
+              <a href="https://t.me/Lilia_lvovna" target="_blank" rel="noopener" class="contact-tg-item">
+                <span class="contact-tg-name">@Lilia_lvovna</span>
+                <span class="contact-tg-label">Личный</span>
+              </a>
+              <a href="https://t.me/transformation_lily" target="_blank" rel="noopener" class="contact-tg-item">
+                <span class="contact-tg-name">Трансформация Лайт</span>
+                <span class="contact-tg-label">Канал</span>
+              </a>
+            </div>
           </div>
 
           <!-- Электронная почта -->
           <div class="contact-card reveal">
-            <div class="contact-icon">
+            <div class="contact-card-icon">
               <svg viewBox="0 0 24 24" fill="#9b6b9e"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
             </div>
             <h3>Электронная почта</h3>
-            <a href="mailto:lilia.romashina@yandex.ru">lilia.romashina@yandex.ru</a>
-            <p>Напиши мне на почту</p>
-          </div>
-
-          <!-- Max Messenger -->
-          <div class="contact-card reveal">
-            <div class="contact-icon">
-              <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <defs><linearGradient id="maxGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3B7DED"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient></defs>
-                <rect width="48" height="48" rx="12" fill="url(#maxGrad)"/>
-                <path d="M14 33l3.2-6.4C14.8 24.2 13 21 13 17.5 13 11.7 18 7 24 7s11 4.7 11 10.5S30 28 24 28c-1.6 0-3.1-.3-4.5-.9L14 33Z" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <h3>Max</h3>
-            <a href="tel:+79160607405">+7 916 060 74 05</a>
-            <p>Найди меня по номеру</p>
-          </div>
-
-          <!-- Канал Трансформация -->
-          <div class="contact-card reveal">
-            <div class="contact-icon">
-              <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg>
-            </div>
-            <h3>Канал «Трансформация»</h3>
-            <a href="https://t.me/transformation_lily" target="_blank" rel="noopener">Присоединяйся к каналу</a>
-            <p>Эфиры, практики, общение</p>
+            <a href="mailto:lilia.romashina@yandex.ru" class="contact-main-link contact-email-link">lilia.romashina@yandex.ru</a>
+            <p class="contact-note">Напиши мне на почту</p>
           </div>
 
         </div>
@@ -880,7 +972,24 @@
 
   <footer>
     <div class="container">
-      <p>© 2026 Лилия Ромашина. Все права защищены.</p>
+      <p class="footer-copy">© 2026 Лилия Ромашина. Все права защищены.</p>
+      <div class="footer-dev">
+        <p class="footer-dev-line">
+          Разработчик сайта —
+          <a href="https://t.me/samadhi2411" target="_blank" rel="noopener" class="dev-tg-link">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg>
+            samadhi2411
+          </a>
+        </p>
+        <p class="footer-dev-line">
+          Нужен сайт? Пиши →
+          <a href="https://max.ru/u/f9LHodD0cOKDY1emmUrupKlXJll32btrvJyZe3d0CeMmvy_rHDa2TWoayQc" target="_blank" rel="noopener" class="dev-max-link">MAX</a>
+          <a href="https://vk.com/samadhi2411" target="_blank" rel="noopener" class="dev-vk-link">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.391 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4.03 8.57 4.03 8.096c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.678.847 2.456 2.27 4.607 2.862 4.607.22 0 .322-.102.322-.66V10.33c-.068-1.186-.695-1.287-.695-1.71 0-.203.17-.407.44-.407h2.744c.373 0 .508.203.508.644v3.473c0 .372.17.508.271.508.22 0 .407-.136.813-.542 1.253-1.406 2.15-3.574 2.15-3.574.119-.254.322-.491.762-.491h1.744c.525 0 .644.27.525.644-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.05.17.491-.085.745-.576.745z"/></svg>
+            Вконтакте
+          </a>
+        </p>
+      </div>
     </div>
   </footer>
 
@@ -963,20 +1072,66 @@
       });
     }
 
-    // ===== VIDEO LAZY LOAD (RuTube) =====
+    // ===== VIDEO PLAYER (RuTube) — Inline, In Place =====
     (function() {
-      // Thumbnail fallback: if API redirect fails, try pic.rutube.ru
+      function stopVideo(card) {
+        if (!card || !card.classList.contains('playing')) return;
+        var iframe = card.querySelector('iframe');
+        if (iframe) {
+          try { iframe.contentWindow.postMessage(JSON.stringify({type:'player:stop',data:{}}), '*'); } catch(e) {}
+          setTimeout(function() { iframe.remove(); }, 60);
+        }
+        var closeBtn = card.querySelector('.video-close-btn');
+        if (closeBtn) closeBtn.remove();
+        card.classList.remove('playing');
+      }
+
+      window.addEventListener('message', function(event) {
+        var msg;
+        try { msg = JSON.parse(event.data); } catch(e) { return; }
+        if (!msg || !msg.type) return;
+
+        if (msg.type === 'player:ready') {
+          try {
+            event.source.postMessage(JSON.stringify({type:'player:enterNakedMode',data:{}}), '*');
+            setTimeout(function() {
+              try { event.source.postMessage(JSON.stringify({type:'player:showControls',data:{}}), '*'); } catch(e) {}
+            }, 300);
+          } catch(e) {}
+        }
+
+        if (msg.type === 'player:changeState' && msg.data && msg.data.state === 'completed') {
+          var cards = document.querySelectorAll('.video-card.playing');
+          for (var i = 0; i < cards.length; i++) {
+            var iframe = cards[i].querySelector('iframe');
+            if (iframe && iframe.contentWindow === event.source) {
+              stopVideo(cards[i]);
+              break;
+            }
+          }
+        }
+
+        if (msg.type === 'player:playComplete') {
+          var cards2 = document.querySelectorAll('.video-card.playing');
+          for (var i = 0; i < cards2.length; i++) {
+            var iframe2 = cards2[i].querySelector('iframe');
+            if (iframe2 && iframe2.contentWindow === event.source) {
+              stopVideo(cards2[i]);
+              break;
+            }
+          }
+        }
+      });
+
       var thumbs = document.querySelectorAll('.video-card-thumb');
       for (var i = 0; i < thumbs.length; i++) {
         thumbs[i].addEventListener('error', function() {
           var card = this.closest('.video-card');
           var videoId = card ? card.getAttribute('data-video-id') : null;
           if (videoId && !this.dataset.retried) {
-            // Try direct pic URL as fallback
             this.dataset.retried = '1';
             this.src = 'https://pic.rutube.ru/video/' + videoId.substring(0,2) + '/' + videoId.substring(2,4) + '/' + videoId + '.jpg?size=l';
           } else {
-            // All sources failed — show fallback UI
             this.style.display = 'none';
             var loading = card.querySelector('.video-card-thumb-loading');
             if (loading) loading.style.display = 'none';
@@ -986,7 +1141,6 @@
             card.insertBefore(fallback, card.firstChild);
           }
         });
-        // Hide loading skeleton once thumb loads
         thumbs[i].addEventListener('load', function() {
           var card = this.closest('.video-card');
           var loading = card ? card.querySelector('.video-card-thumb-loading') : null;
@@ -994,36 +1148,40 @@
         });
       }
 
-      // Stop any playing video
-      function stopVideo(card) {
-        if (!card || !card.classList.contains('playing')) return;
-        var iframe = card.querySelector('iframe');
-        if (iframe) iframe.remove();
-        card.classList.remove('playing');
-      }
-
-      // Click to play — replaces thumbnail with iframe
       var videoCards = document.querySelectorAll('.video-card[data-video-id]');
       for (var i = 0; i < videoCards.length; i++) {
-        videoCards[i].addEventListener('click', function() {
+        videoCards[i].addEventListener('click', function(e) {
+          if (e.target.closest('.video-close-btn')) return;
           if (this.classList.contains('playing')) return;
 
-          // Stop other playing videos first
+          // Stop any other playing videos first
           var playing = document.querySelectorAll('.video-card.playing');
           for (var j = 0; j < playing.length; j++) stopVideo(playing[j]);
 
           var videoId = this.getAttribute('data-video-id');
           var params = this.getAttribute('data-embed-params') || '';
-          var separator = params ? '&' : '?';
-          var embedUrl = 'https://rutube.ru/play/embed/' + videoId + '/' + (params ? '?' + params : '') + separator + 'autoplay=1';
+          var embedUrl = 'https://rutube.ru/play/embed/' + videoId + '/';
+          if (params) embedUrl += '?' + params + '&autoplay=1';
+          else embedUrl += '?autoplay=1';
 
           var iframe = document.createElement('iframe');
           iframe.src = embedUrl;
           iframe.setAttribute('allow', 'autoplay; clipboard-write; fullscreen');
           iframe.setAttribute('allowfullscreen', '');
           iframe.setAttribute('frameborder', '0');
-
           this.appendChild(iframe);
+
+          var closeBtn = document.createElement('button');
+          closeBtn.className = 'video-close-btn';
+          closeBtn.title = 'Закрыть видео';
+          closeBtn.textContent = '✕';
+          var card = this;
+          closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            stopVideo(card);
+          });
+          this.appendChild(closeBtn);
+
           this.classList.add('playing');
         });
       }
@@ -1128,7 +1286,6 @@
     function showError(el) { el.style.display = 'block'; }
     function hideError(el) { el.style.display = 'none'; }
 
-    // Telegram config (original, working)
     var BOT_TOKEN = '8782195281:AAGM0yEBGY_2yIDK8XRjleyCi_ljEwN8uow';
     var CHAT_ID = '5569439365';
     var TG_URL = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
@@ -1168,7 +1325,6 @@
       });
     }
 
-    // Email via FormSubmit.co (fire-and-forget, secondary channel)
     function sendToEmail(name, phone, message) {
       try {
         fetch('https://formsubmit.co/ajax/lilia.romashina@yandex.ru', {
@@ -1193,9 +1349,7 @@
         .catch(function(err) {
           console.warn('Email ошибка:', err.message);
         });
-      } catch(e) {
-        // Silently fail — Telegram is primary
-      }
+      } catch(e) {}
     }
 
     form.addEventListener('submit', function(e) {
@@ -1225,7 +1379,6 @@
 
       var normalizedPhone = '+7' + digits.slice(1);
 
-      // === Build Telegram message ===
       var text = '\u{1F514} Новая заявка с сайта!\n\n'
         + '\u{1F464} Имя: ' + name + '\n'
         + '\u{1F4F1} Телефон: ' + normalizedPhone + '\n'
@@ -1236,11 +1389,9 @@
         text: text
       });
 
-      // === Send FIRST, before DOM changes ===
       sendToTelegram(payload, 0);
       sendToEmail(name, normalizedPhone, message);
 
-      // === Then show success ===
       form.style.display = 'none';
       formSuccess.classList.add('show');
     });
