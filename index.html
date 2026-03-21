@@ -16,12 +16,19 @@
   <meta property="og:image" content="https://liliya-romashina.ru/img/1.jpg">
   <meta property="og:locale" content="ru_RU">
 
-  <!-- Google Fonts — optimized loading -->
+  <!-- Preload hero image — starts loading before CSS parsing -->
+  <link rel="preload" as="image" href="img/1.jpg" fetchpriority="high">
+
+  <!-- DNS prefetch for external resources -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <link rel="dns-prefetch" href="https://rutube.ru">
+
+  <!-- Google Fonts — only needed weights -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://pic.rutube.ru" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
 
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
@@ -45,18 +52,8 @@
   </script>
 
   <style>
-    /* ===== CSS RESET & BASE ===== */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      font-size: 16px;
-    }
-
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
     body {
       font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
       background-color: #faf9f7;
@@ -65,1349 +62,258 @@
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
-
     h1, h2, h3, h4 {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 600;
       line-height: 1.25;
       color: #1e1b30;
     }
-
-    a {
-      color: #9b6b9e;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    a:hover {
-      color: #7a4f7d;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
+    a { color: #9b6b9e; text-decoration: none; transition: color 0.3s ease; }
+    a:hover { color: #7a4f7d; }
+    img { max-width: 100%; display: block; }
     ul { list-style: none; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
 
-    .container {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 20px;
+    /* Lazy image placeholder */
+    img[data-src] {
+      background: linear-gradient(135deg, #f3eef8 0%, #fdf6f0 100%);
+      min-height: 80px;
+    }
+    img[data-src].loaded {
+      background: none;
+      min-height: auto;
     }
 
-    /* ===== ANIMATIONS ===== */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* ===== content-visibility: browser skips rendering of off-screen sections ===== */
+    .cv-auto {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 800px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    /* Animations — defined but paused by default for perf */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes pulseGift { 0%, 100% { box-shadow: 0 0 0 0 rgba(155,107,158,0.4); } 50% { box-shadow: 0 0 0 16px rgba(155,107,158,0); } }
 
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    @keyframes pulseGift {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(155,107,158,0.4); }
-      50% { box-shadow: 0 0 0 16px rgba(155,107,158,0); }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ===== HEADER / NAV ===== */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-      padding: 14px 0;
-      transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.4s ease;
-    }
-
-    header.scrolled {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 2px 30px rgba(0,0,0,0.08);
-      padding: 8px 0;
-    }
-
-    header .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #9b6b9e;
-      letter-spacing: 1px;
-    }
-
-    .logo span {
-      color: #9b6b9e;
-      font-weight: 700;
-    }
-
-    nav ul {
-      display: flex;
-      gap: 24px;
-    }
-
-    nav a {
-      color: #2d2a3e;
-      font-size: 0.8rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      position: relative;
-      padding-bottom: 4px;
-    }
-
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 1.5px;
-      background: #9b6b9e;
-      transition: width 0.3s ease;
-    }
-
+    /* Header */
+    header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 14px 0; transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.4s ease; will-change: background, padding; }
+    header.scrolled { background: rgba(255,255,255,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 2px 30px rgba(0,0,0,0.08); padding: 8px 0; }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.5rem; font-weight: 700; color: #9b6b9e; letter-spacing: 1px; }
+    .logo span { color: #9b6b9e; font-weight: 700; }
+    nav ul { display: flex; gap: 24px; }
+    nav a { color: #2d2a3e; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; position: relative; padding-bottom: 4px; }
+    nav a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px; background: #9b6b9e; transition: width 0.3s ease; }
     nav a:hover { color: #9b6b9e; }
     nav a:hover::after { width: 100%; }
 
-    /* Burger */
-    .burger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      z-index: 1001;
-      background: none;
-      border: none;
-      padding: 5px;
-    }
-
-    .burger span {
-      display: block;
-      width: 26px;
-      height: 2px;
-      background: #2d2a3e;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-
+    .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; background: none; border: none; padding: 5px; }
+    .burger span { display: block; width: 26px; height: 2px; background: #2d2a3e; border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; }
     .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .burger.active span:nth-child(2) { opacity: 0; }
     .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* ===== HERO SECTION ===== */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 120px 0 80px;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(160deg, #faf9f7 0%, #f3eef8 40%, #fdf6f0 70%, #f0eafa 100%);
-    }
-
-    #hero::before {
-      content: '';
-      position: absolute;
-      top: -20%;
-      right: -10%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(155,107,158,0.08) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    #hero::after {
-      content: '';
-      position: absolute;
-      bottom: -20%;
-      left: -10%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .hero-inner {
-      display: flex;
-      align-items: center;
-      gap: 60px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-photo {
-      flex: 0 0 380px;
-      height: 500px;
-      border-radius: 20px;
-      overflow: hidden;
-      position: relative;
-      border: 1px solid rgba(155,107,158,0.15);
-      box-shadow: 0 20px 60px rgba(155,107,158,0.12);
-      animation: fadeIn 1s ease 0.2s both;
-    }
-
-    .hero-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    /* Hero */
+    #hero { min-height: 100vh; display: flex; align-items: center; padding: 120px 0 80px; position: relative; overflow: hidden; background: linear-gradient(160deg, #faf9f7 0%, #f3eef8 40%, #fdf6f0 70%, #f0eafa 100%); }
+    #hero::before { content: ''; position: absolute; top: -20%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(155,107,158,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+    #hero::after { content: ''; position: absolute; bottom: -20%; left: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+    .hero-inner { display: flex; align-items: center; gap: 60px; position: relative; z-index: 1; }
+    .hero-photo { flex: 0 0 380px; height: 500px; border-radius: 20px; overflow: hidden; position: relative; border: 1px solid rgba(155,107,158,0.15); box-shadow: 0 20px 60px rgba(155,107,158,0.12); animation: fadeIn 1s ease 0.2s both; }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
     .hero-content { flex: 1; }
-
-    .hero-welcome {
-      font-size: 1.05rem;
-      font-weight: 400;
-      color: #5a4a6b;
-      margin-bottom: 20px;
-      animation: fadeInUp 0.8s ease 0.4s both;
-      line-height: 1.7;
-    }
-
-    .hero-content h1 {
-      font-size: 3rem;
-      color: #1e1b30;
-      margin-bottom: 20px;
-      animation: fadeInUp 0.8s ease 0.6s both;
-    }
-
-    .hero-content h1 em {
-      font-style: normal;
-      background: linear-gradient(90deg, #9b6b9e, #c49bc7, #9b6b9e);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: shimmer 4s linear infinite;
-    }
-
-    .hero-subtitle {
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: #4a4260;
-      margin-bottom: 36px;
-      max-width: 540px;
-      animation: fadeInUp 0.8s ease 0.8s both;
-      line-height: 1.7;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 16px 40px;
-      font-family: 'Montserrat', system-ui, sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.4s ease;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #9b6b9e, #b388b6);
-      color: #fff;
-      animation: fadeInUp 0.8s ease 1s both;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.35);
-      color: #fff;
-    }
-
+    .hero-welcome { font-size: 1.05rem; font-weight: 400; color: #5a4a6b; margin-bottom: 20px; animation: fadeInUp 0.8s ease 0.4s both; line-height: 1.7; }
+    .hero-content h1 { font-size: 3rem; color: #1e1b30; margin-bottom: 20px; animation: fadeInUp 0.8s ease 0.6s both; }
+    /* Shimmer paused until visible */
+    .hero-content h1 em { font-style: normal; background: linear-gradient(90deg, #9b6b9e, #c49bc7, #9b6b9e); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 4s linear infinite; }
+    .hero-subtitle { font-size: 1.1rem; font-weight: 400; color: #4a4260; margin-bottom: 36px; max-width: 540px; animation: fadeInUp 0.8s ease 0.8s both; line-height: 1.7; }
+    .btn { display: inline-block; padding: 16px 40px; font-family: 'Montserrat', system-ui, sans-serif; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; border: none; border-radius: 50px; cursor: pointer; transition: transform 0.4s ease, box-shadow 0.4s ease; }
+    .btn-primary { background: linear-gradient(135deg, #9b6b9e, #b388b6); color: #fff; animation: fadeInUp 0.8s ease 1s both; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(155,107,158,0.35); color: #fff; }
     .btn-primary:active { transform: translateY(0); }
 
-    /* ===== SECTION STYLES ===== */
-    section {
-      padding: 100px 0;
-      position: relative;
-    }
-
-    .section-label {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: #9b6b9e;
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      font-size: 2.4rem;
-      margin-bottom: 20px;
-      color: #1e1b30;
-    }
-
-    .section-subtitle {
-      font-size: 1.05rem;
-      font-weight: 400;
-      color: #4a4260;
-      max-width: 620px;
-      margin-bottom: 50px;
-      line-height: 1.7;
-    }
-
+    /* Sections */
+    section { padding: 100px 0; position: relative; }
+    .section-label { display: inline-block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 3px; color: #9b6b9e; margin-bottom: 12px; }
+    .section-title { font-size: 2.4rem; margin-bottom: 20px; color: #1e1b30; }
+    .section-subtitle { font-size: 1.05rem; font-weight: 400; color: #4a4260; max-width: 620px; margin-bottom: 50px; line-height: 1.7; }
     .section-center { text-align: center; }
-
-    .section-center .section-subtitle {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .divider {
-      width: 60px;
-      height: 2px;
-      background: linear-gradient(90deg, #9b6b9e, transparent);
-      margin: 24px 0;
-    }
-
+    .section-center .section-subtitle { margin-left: auto; margin-right: auto; }
+    .divider { width: 60px; height: 2px; background: linear-gradient(90deg, #9b6b9e, transparent); margin: 24px 0; }
     .divider-center { margin: 24px auto; }
 
-    /* ===== ABOUT SECTION ===== */
-    #about {
-      background: linear-gradient(180deg, #faf9f7 0%, #f5f0fa 50%, #faf9f7 100%);
-    }
+    /* About */
+    #about { background: linear-gradient(180deg, #faf9f7 0%, #f5f0fa 50%, #faf9f7 100%); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .about-text p { margin-bottom: 20px; font-size: 1rem; font-weight: 400; color: #3d3654; line-height: 1.8; }
+    .about-text strong { color: #9b6b9e; font-weight: 600; }
+    .about-highlight { background: linear-gradient(135deg, rgba(155,107,158,0.08), rgba(212,175,55,0.05)); border-left: 3px solid #9b6b9e; padding: 24px 28px; border-radius: 0 12px 12px 0; margin: 28px 0; }
+    .about-highlight p { font-style: italic; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.2rem; font-weight: 700; color: #2d2a3e !important; }
+    .about-masters { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+    .master-tag { display: inline-block; padding: 6px 16px; background: rgba(155,107,158,0.1); border: 1px solid rgba(155,107,158,0.2); border-radius: 20px; font-size: 0.85rem; color: #7a4f7d; font-weight: 500; }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .stat-card { background: #fff; border: 1px solid rgba(155,107,158,0.1); border-radius: 16px; padding: 28px 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: transform 0.3s ease, box-shadow 0.3s ease; contain: layout style paint; }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(155,107,158,0.12); }
+    .stat-number { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2.4rem; font-weight: 700; color: #9b6b9e; display: block; }
+    .stat-text { font-size: 0.85rem; color: #6b6380; margin-top: 4px; font-weight: 400; }
 
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-    }
-
-    .about-text p {
-      margin-bottom: 20px;
-      font-size: 1rem;
-      font-weight: 400;
-      color: #3d3654;
-      line-height: 1.8;
-    }
-
-    .about-text strong {
-      color: #9b6b9e;
-      font-weight: 600;
-    }
-
-    .about-highlight {
-      background: linear-gradient(135deg, rgba(155,107,158,0.08), rgba(212,175,55,0.05));
-      border-left: 3px solid #9b6b9e;
-      padding: 24px 28px;
-      border-radius: 0 12px 12px 0;
-      margin: 28px 0;
-    }
-
-    .about-highlight p {
-      font-style: italic;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #2d2a3e !important;
-    }
-
-    .about-masters {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .master-tag {
-      display: inline-block;
-      padding: 6px 16px;
-      background: rgba(155,107,158,0.1);
-      border: 1px solid rgba(155,107,158,0.2);
-      border-radius: 20px;
-      font-size: 0.85rem;
-      color: #7a4f7d;
-      font-weight: 500;
-    }
-
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .stat-card {
-      background: #fff;
-      border: 1px solid rgba(155,107,158,0.1);
-      border-radius: 16px;
-      padding: 28px 24px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.12);
-    }
-
-    .stat-number {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: #9b6b9e;
-      display: block;
-    }
-
-    .stat-text {
-      font-size: 0.85rem;
-      color: #6b6380;
-      margin-top: 4px;
-      font-weight: 400;
-    }
-
-    /* ===== CERTIFICATES SECTION ===== */
-    #certificates {
-      background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 50%, #faf9f7 100%);
-      padding: 100px 0;
-    }
-
-    .certs-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-    }
-
-    .cert-card {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.06);
-      cursor: pointer;
-      transition: all 0.4s ease;
-      position: relative;
-      background: #fff;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-    }
-
-    .cert-card:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 12px 40px rgba(155,107,158,0.15);
-    }
-
-    .cert-card img {
-      width: 100%;
-      height: 280px;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
+    /* Certificates */
+    #certificates { background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 50%, #faf9f7 100%); padding: 100px 0; }
+    .certs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .cert-card { border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.4s ease, box-shadow 0.4s ease; position: relative; background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.04); contain: layout style paint; }
+    .cert-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 12px 40px rgba(155,107,158,0.15); }
+    .cert-card img { width: 100%; height: 280px; object-fit: cover; transition: transform 0.4s ease; }
     .cert-card:hover img { transform: scale(1.05); }
-
-    .cert-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
+    .cert-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
     .cert-card:hover .cert-overlay { opacity: 1; }
+    .cert-overlay span { font-size: 2rem; color: #9b6b9e; }
 
-    .cert-overlay span {
-      font-size: 2rem;
-      color: #9b6b9e;
-    }
-
-    /* ===== GIFT / MONEY CODE ===== */
-    #gift {
-      padding: 80px 0;
-      background: linear-gradient(135deg, #f3eef8 0%, #fdf6f0 50%, #f0eafa 100%);
-      position: relative;
-      overflow: hidden;
-    }
-
-    #gift::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .gift-inner {
-      display: flex;
-      align-items: center;
-      gap: 50px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .gift-icon-wrap {
-      flex: 0 0 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #9b6b9e, #c49bc7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.5rem;
-      animation: pulseGift 2.5s ease-in-out infinite;
-      box-shadow: 0 8px 30px rgba(155,107,158,0.3);
-    }
-
+    /* Gift */
+    #gift { padding: 80px 0; background: linear-gradient(135deg, #f3eef8 0%, #fdf6f0 50%, #f0eafa 100%); position: relative; overflow: hidden; }
+    #gift::before { content: ''; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+    .gift-inner { display: flex; align-items: center; gap: 50px; position: relative; z-index: 1; }
+    /* pulseGift paused by default, activated when visible */
+    .gift-icon-wrap { flex: 0 0 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, #9b6b9e, #c49bc7); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; box-shadow: 0 8px 30px rgba(155,107,158,0.3); animation: pulseGift 2.5s ease-in-out infinite; animation-play-state: paused; }
+    .gift-icon-wrap.anim-on { animation-play-state: running; }
     .gift-content { flex: 1; }
+    .gift-content h2 { font-size: 2.2rem; margin-bottom: 12px; color: #1e1b30; }
+    .gift-content h2 span { color: #9b6b9e; }
+    .gift-content p { font-size: 1.05rem; color: #4a4260; margin-bottom: 24px; line-height: 1.7; font-weight: 400; }
+    .gift-content .btn-gift { display: inline-block; padding: 16px 40px; font-family: 'Montserrat', system-ui, sans-serif; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; border: none; border-radius: 50px; cursor: pointer; background: linear-gradient(135deg, #d4af37, #e8c84a); color: #fff; transition: transform 0.4s ease, box-shadow 0.4s ease; text-decoration: none; }
+    .gift-content .btn-gift:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,0.35); color: #fff; }
 
-    .gift-content h2 {
-      font-size: 2.2rem;
-      margin-bottom: 12px;
-      color: #1e1b30;
-    }
-
-    .gift-content h2 span {
-      color: #9b6b9e;
-    }
-
-    .gift-content p {
-      font-size: 1.05rem;
-      color: #4a4260;
-      margin-bottom: 24px;
-      line-height: 1.7;
-      font-weight: 400;
-    }
-
-    .gift-content .btn-gift {
-      display: inline-block;
-      padding: 16px 40px;
-      font-family: 'Montserrat', system-ui, sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      background: linear-gradient(135deg, #d4af37, #e8c84a);
-      color: #fff;
-      transition: all 0.4s ease;
-      text-decoration: none;
-    }
-
-    .gift-content .btn-gift:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(212,175,55,0.35);
-      color: #fff;
-    }
-
-    /* ===== TARGET AUDIENCE ===== */
-    #audience {
-      background: linear-gradient(180deg, #faf9f7 0%, #f8f5fc 50%, #faf9f7 100%);
-    }
-
-    .audience-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .audience-card {
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 20px;
-      padding: 36px 28px;
-      transition: all 0.4s ease;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    }
-
-    .audience-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, #9b6b9e, #d4af37);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .audience-card:hover {
-      background: #fff;
-      box-shadow: 0 12px 40px rgba(155,107,158,0.1);
-      transform: translateY(-6px);
-    }
-
+    /* Audience */
+    #audience { background: linear-gradient(180deg, #faf9f7 0%, #f8f5fc 50%, #faf9f7 100%); }
+    .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .audience-card { background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 20px; padding: 36px 28px; transition: transform 0.4s ease, box-shadow 0.4s ease; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.03); contain: layout style paint; }
+    .audience-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #9b6b9e, #d4af37); opacity: 0; transition: opacity 0.4s ease; }
+    .audience-card:hover { box-shadow: 0 12px 40px rgba(155,107,158,0.1); transform: translateY(-6px); }
     .audience-card:hover::before { opacity: 1; }
+    .audience-icon { font-size: 2.2rem; margin-bottom: 16px; display: block; }
+    .audience-card h3 { font-size: 1.3rem; margin-bottom: 10px; color: #1e1b30; }
+    .audience-card p { font-size: 0.92rem; font-weight: 400; color: #4a4260; line-height: 1.7; }
 
-    .audience-icon {
-      font-size: 2.2rem;
-      margin-bottom: 16px;
-      display: block;
-    }
+    /* Services */
+    #services { background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 50%, #faf9f7 100%); }
+    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .service-item { display: flex; gap: 20px; align-items: flex-start; padding: 32px 28px; background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.03); contain: layout style paint; }
+    .service-item:hover { box-shadow: 0 8px 30px rgba(155,107,158,0.1); transform: translateY(-3px); }
+    .service-icon { flex: 0 0 50px; height: 50px; background: linear-gradient(135deg, rgba(155,107,158,0.12), rgba(212,175,55,0.1)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .service-item h3 { font-size: 1.15rem; margin-bottom: 6px; color: #1e1b30; }
+    .service-item p { font-size: 0.9rem; font-weight: 400; color: #4a4260; line-height: 1.6; }
 
-    .audience-card h3 {
-      font-size: 1.3rem;
-      margin-bottom: 10px;
-      color: #1e1b30;
-    }
+    /* Results */
+    #results { background: linear-gradient(180deg, #faf9f7 0%, #f3eef8 50%, #faf9f7 100%); }
+    .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .result-card { background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 20px; padding: 36px 28px; text-align: center; transition: transform 0.4s ease, box-shadow 0.4s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.03); contain: layout style paint; }
+    .result-card:hover { box-shadow: 0 12px 40px rgba(155,107,158,0.1); transform: translateY(-4px); }
+    .result-num { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #9b6b9e, #b388b6); color: #fff; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
+    .result-card h3 { font-size: 1.2rem; margin-bottom: 10px; color: #1e1b30; }
+    .result-card p { font-size: 0.9rem; font-weight: 400; color: #4a4260; line-height: 1.6; }
 
-    .audience-card p {
-      font-size: 0.92rem;
-      font-weight: 400;
-      color: #4a4260;
-      line-height: 1.7;
-    }
-
-    /* ===== SERVICES ===== */
-    #services {
-      background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 50%, #faf9f7 100%);
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-    }
-
-    .service-item {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      padding: 32px 28px;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 16px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    }
-
-    .service-item:hover {
-      box-shadow: 0 8px 30px rgba(155,107,158,0.1);
-      transform: translateY(-3px);
-    }
-
-    .service-icon {
-      flex: 0 0 50px;
-      height: 50px;
-      background: linear-gradient(135deg, rgba(155,107,158,0.12), rgba(212,175,55,0.1));
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-    }
-
-    .service-item h3 {
-      font-size: 1.15rem;
-      margin-bottom: 6px;
-      color: #1e1b30;
-    }
-
-    .service-item p {
-      font-size: 0.9rem;
-      font-weight: 400;
-      color: #4a4260;
-      line-height: 1.6;
-    }
-
-    /* ===== RESULTS ===== */
-    #results {
-      background: linear-gradient(180deg, #faf9f7 0%, #f3eef8 50%, #faf9f7 100%);
-    }
-
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .result-card {
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 20px;
-      padding: 36px 28px;
-      text-align: center;
-      transition: all 0.4s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    }
-
-    .result-card:hover {
-      box-shadow: 0 12px 40px rgba(155,107,158,0.1);
-      transform: translateY(-4px);
-    }
-
-    .result-num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #9b6b9e, #b388b6);
-      color: #fff;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .result-card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      color: #1e1b30;
-    }
-
-    .result-card p {
-      font-size: 0.9rem;
-      font-weight: 400;
-      color: #4a4260;
-      line-height: 1.6;
-    }
-
-    /* ===== REVIEWS SECTION ===== */
-    #reviews {
-      background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 40%, #f3eef8 100%);
-      padding: 100px 0;
-    }
-
-    .reviews-intro {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      margin-bottom: 60px;
-    }
-
-    .reviews-intro-photo {
-      flex: 0 0 200px;
-      height: 200px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 3px solid rgba(155,107,158,0.2);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.1);
-    }
-
-    .reviews-intro-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    /* Reviews */
+    #reviews { background: linear-gradient(180deg, #faf9f7 0%, #fdf6f0 40%, #f3eef8 100%); padding: 100px 0; }
+    .reviews-intro { display: flex; align-items: center; gap: 40px; margin-bottom: 60px; }
+    .reviews-intro-photo { flex: 0 0 200px; height: 200px; border-radius: 50%; overflow: hidden; border: 3px solid rgba(155,107,158,0.2); box-shadow: 0 8px 30px rgba(155,107,158,0.1); }
+    .reviews-intro-photo img { width: 100%; height: 100%; object-fit: cover; }
     .reviews-intro-text { flex: 1; }
-
-    .reviews-sub-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.6rem;
-      color: #5a4a6b;
-      margin-top: 16px;
-      font-weight: 400;
-    }
-
-    /* Video Grid */
-    .video-section-label {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #9b6b9e;
-      margin-bottom: 28px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .videos-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 70px;
-    }
-
-    .video-card {
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.06);
-      aspect-ratio: 16/9;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-    }
-
-    .video-card:hover {
-      box-shadow: 0 8px 30px rgba(155,107,158,0.12);
-      transform: translateY(-4px);
-    }
-
-    .video-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 12px;
-      background: linear-gradient(135deg, #e8dff0, #f3eef8, #fdf6f0);
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
-
-    .video-placeholder.has-thumb {
-      background-color: #1e1b30;
-    }
-
-    .video-placeholder.has-thumb::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.15);
-      z-index: 1;
-    }
-
-    .play-btn {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(155,107,158,0.15);
-      border: 2px solid rgba(155,107,158,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      position: relative;
-      z-index: 2;
-    }
-
-    .has-thumb .play-btn {
-      background: rgba(255,255,255,0.25);
-      border-color: rgba(255,255,255,0.6);
-    }
-
-    .video-card:hover .play-btn {
-      background: rgba(155,107,158,0.3);
-      border-color: #9b6b9e;
-      transform: scale(1.1);
-    }
-
-    .has-thumb:hover .play-btn {
-      background: rgba(255,255,255,0.4);
-      border-color: #fff;
-    }
-
-    .play-btn svg {
-      width: 24px;
-      height: 24px;
-      fill: #9b6b9e;
-      margin-left: 3px;
-    }
-
-    .has-thumb .play-btn svg {
-      fill: #fff;
-    }
-
-    .video-label {
-      font-size: 0.8rem;
-      color: #8a7fa0;
-      letter-spacing: 1px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .has-thumb .video-label {
-      color: rgba(255,255,255,0.85);
-    }
-
-    .video-card iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 5;
-    }
-
+    .reviews-sub-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.6rem; color: #5a4a6b; margin-top: 16px; font-weight: 400; }
+    .video-section-label { font-size: 1.1rem; font-weight: 600; color: #9b6b9e; margin-bottom: 28px; text-transform: uppercase; letter-spacing: 2px; }
+    .videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 70px; }
+    .video-card { border-radius: 16px; overflow: hidden; position: relative; background: #fff; border: 1px solid rgba(0,0,0,0.06); aspect-ratio: 16/9; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.04); contain: layout style; }
+    .video-card:hover { box-shadow: 0 8px 30px rgba(155,107,158,0.12); transform: translateY(-4px); }
+    .video-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; background: linear-gradient(135deg, #e8dff0, #f3eef8, #fdf6f0); background-size: cover; background-position: center; position: relative; }
+    .video-placeholder.has-thumb { background-color: #1e1b30; }
+    .video-placeholder.has-thumb::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.15); z-index: 1; }
+    .play-btn { width: 64px; height: 64px; border-radius: 50%; background: rgba(155,107,158,0.15); border: 2px solid rgba(155,107,158,0.4); display: flex; align-items: center; justify-content: center; transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease; position: relative; z-index: 2; }
+    .has-thumb .play-btn { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); }
+    .video-card:hover .play-btn { background: rgba(155,107,158,0.3); border-color: #9b6b9e; transform: scale(1.1); }
+    .has-thumb:hover .play-btn { background: rgba(255,255,255,0.4); border-color: #fff; }
+    .play-btn svg { width: 24px; height: 24px; fill: #9b6b9e; margin-left: 3px; }
+    .has-thumb .play-btn svg { fill: #fff; }
+    .video-label { font-size: 0.8rem; color: #8a7fa0; letter-spacing: 1px; position: relative; z-index: 2; }
+    .has-thumb .video-label { color: rgba(255,255,255,0.85); }
+    .video-card iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; z-index: 5; }
     .video-card.playing .video-placeholder { display: none; }
+    .video-thumb { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+    .video-close-btn { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.4); color: #fff; font-size: 1.1rem; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: background 0.3s ease; line-height: 1; padding: 0; font-family: sans-serif; }
+    .video-close-btn:hover { background: rgba(155,107,158,0.8); }
+    .video-card.playing .video-close-btn { display: flex; }
 
-    /* Video thumbnail image */
-    .video-thumb {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-    }
-
-    /* Close button on playing video */
-    .video-close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.4);
-      color: #fff;
-      font-size: 1.1rem;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 10;
-      transition: background 0.3s ease;
-      line-height: 1;
-      padding: 0;
-      font-family: sans-serif;
-    }
-
-    .video-close-btn:hover {
-      background: rgba(155,107,158,0.8);
-    }
-
-    .video-card.playing .video-close-btn {
-      display: flex;
-    }
-
-    /* Review Images Grid */
-    .review-images-label {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #9b6b9e;
-      margin-bottom: 28px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .review-images-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 16px;
-    }
-
-    .review-img-card {
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.06);
-      cursor: pointer;
-      transition: all 0.4s ease;
-      position: relative;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    }
-
-    .review-img-card:hover {
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.15);
-    }
-
-    .review-img-card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
+    /* Review Images */
+    .review-images-label { font-size: 1.1rem; font-weight: 600; color: #9b6b9e; margin-bottom: 28px; text-transform: uppercase; letter-spacing: 2px; }
+    .review-images-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .review-img-card { border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.4s ease, box-shadow 0.4s ease; position: relative; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.04); contain: layout style paint; }
+    .review-img-card:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 8px 30px rgba(155,107,158,0.15); }
+    .review-img-card img { width: 100%; height: 220px; object-fit: cover; transition: transform 0.4s ease; }
     .review-img-card:hover img { transform: scale(1.05); }
-
-    .review-img-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
+    .review-img-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
     .review-img-card:hover .review-img-overlay { opacity: 1; }
+    .review-img-overlay span { font-size: 1.8rem; color: #9b6b9e; }
 
-    .review-img-overlay span {
-      font-size: 1.8rem;
-      color: #9b6b9e;
-    }
-
-    /* ===== LIGHTBOX ===== */
-    .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(10px);
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-      cursor: zoom-out;
-    }
-
-    .lightbox.open {
-      display: flex;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .lightbox img {
-      max-width: 90vw;
-      max-height: 90vh;
-      object-fit: contain;
-      border-radius: 8px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      cursor: default;
-    }
-
-    .lightbox-close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      width: 44px;
-      height: 44px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.5rem;
-      color: #fff;
-      transition: all 0.3s ease;
-      z-index: 10000;
-    }
-
-    .lightbox-close:hover {
-      background: rgba(155,107,158,0.5);
-    }
-
-    .lightbox-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 48px;
-      height: 48px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.3rem;
-      color: #fff;
-      transition: all 0.3s ease;
-      z-index: 10000;
-    }
-
-    .lightbox-nav:hover {
-      background: rgba(155,107,158,0.5);
-    }
-
+    /* Lightbox */
+    .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+    .lightbox.open { display: flex; animation: fadeIn 0.3s ease; }
+    .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); cursor: default; }
+    .lightbox-close { position: absolute; top: 20px; right: 30px; width: 44px; height: 44px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.5rem; color: #fff; transition: background 0.3s ease; z-index: 10000; }
+    .lightbox-close:hover { background: rgba(155,107,158,0.5); }
+    .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; color: #fff; transition: background 0.3s ease; z-index: 10000; }
+    .lightbox-nav:hover { background: rgba(155,107,158,0.5); }
     .lightbox-prev { left: 20px; }
     .lightbox-next { right: 20px; }
 
-    /* ===== CTA FORM SECTION ===== */
-    #signup {
-      padding: 100px 0;
-      background: linear-gradient(135deg, #f3eef8 0%, #fdf6f0 50%, #f0eafa 100%);
-      position: relative;
-    }
-
-    #signup::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(155,107,158,0.2), transparent);
-    }
-
-    .signup-inner {
-      display: flex;
-      gap: 60px;
-      align-items: center;
-    }
-
-    .signup-photo {
-      flex: 0 0 340px;
-      height: 440px;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid rgba(155,107,158,0.15);
-      box-shadow: 0 16px 50px rgba(155,107,158,0.12);
-    }
-
-    .signup-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    /* Signup */
+    #signup { padding: 100px 0; background: linear-gradient(135deg, #f3eef8 0%, #fdf6f0 50%, #f0eafa 100%); position: relative; }
+    #signup::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(155,107,158,0.2), transparent); }
+    .signup-inner { display: flex; gap: 60px; align-items: center; }
+    .signup-photo { flex: 0 0 340px; height: 440px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(155,107,158,0.15); box-shadow: 0 16px 50px rgba(155,107,158,0.12); }
+    .signup-photo img { width: 100%; height: 100%; object-fit: cover; }
     .signup-form-wrap { flex: 1; }
-
-    .signup-form-wrap h2 {
-      font-size: 2.2rem;
-      margin-bottom: 10px;
-    }
-
-    .signup-form-wrap .form-sub {
-      font-size: 1rem;
-      font-weight: 400;
-      color: #4a4260;
-      margin-bottom: 32px;
-      line-height: 1.7;
-    }
-
+    .signup-form-wrap h2 { font-size: 2.2rem; margin-bottom: 10px; }
+    .signup-form-wrap .form-sub { font-size: 1rem; font-weight: 400; color: #4a4260; margin-bottom: 32px; line-height: 1.7; }
     .form-group { margin-bottom: 20px; }
-
-    .form-group label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 8px;
-      color: #6b6380;
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 14px 20px;
-      background: #fff;
-      border: 1px solid rgba(155,107,158,0.2);
-      border-radius: 12px;
-      color: #2d2a3e;
-      font-family: 'Montserrat', system-ui, sans-serif;
-      font-size: 16px;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      outline: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: #9b6b9e;
-      box-shadow: 0 0 0 3px rgba(155,107,158,0.1);
-    }
-
-    .form-group input::placeholder,
-    .form-group textarea::placeholder {
-      color: #a8a0b8;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .char-counter {
-      font-size: 0.75rem;
-      color: #a8a0b8;
-      text-align: right;
-      margin-top: 4px;
-    }
-
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; color: #6b6380; }
+    .form-group input, .form-group textarea { width: 100%; padding: 14px 20px; background: #fff; border: 1px solid rgba(155,107,158,0.2); border-radius: 12px; color: #2d2a3e; font-family: 'Montserrat', system-ui, sans-serif; font-size: 16px; transition: border-color 0.3s ease, box-shadow 0.3s ease; outline: none; -webkit-appearance: none; }
+    .form-group input:focus, .form-group textarea:focus { border-color: #9b6b9e; box-shadow: 0 0 0 3px rgba(155,107,158,0.1); }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: #a8a0b8; }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .char-counter { font-size: 0.75rem; color: #a8a0b8; text-align: right; margin-top: 4px; }
     .char-counter.warn { color: #d4a437; }
     .char-counter.limit { color: #c0392b; }
+    .btn-submit { width: 100%; padding: 16px 40px; font-family: 'Montserrat', system-ui, sans-serif; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; border: none; border-radius: 50px; cursor: pointer; background: linear-gradient(135deg, #9b6b9e, #b388b6); color: #fff; transition: transform 0.4s ease, box-shadow 0.4s ease; -webkit-appearance: none; touch-action: manipulation; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(155,107,158,0.35); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+    .form-success { display: none; text-align: center; padding: 40px 20px; }
+    .form-success.show { display: block; animation: fadeInUp 0.6s ease; }
+    .form-success .success-icon { font-size: 3rem; margin-bottom: 16px; display: block; }
+    .form-success h3 { font-size: 1.6rem; margin-bottom: 10px; color: #9b6b9e; }
+    .form-success p { font-size: 1rem; color: #4a4260; }
+    .form-error { color: #c0392b; font-size: 0.82rem; margin-top: 4px; display: none; }
 
-    .btn-submit {
-      width: 100%;
-      padding: 16px 40px;
-      font-family: 'Montserrat', system-ui, sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      background: linear-gradient(135deg, #9b6b9e, #b388b6);
-      color: #fff;
-      transition: all 0.4s ease;
-      -webkit-appearance: none;
-      touch-action: manipulation;
-    }
-
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(155,107,158,0.35);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .form-success {
-      display: none;
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .form-success.show {
-      display: block;
-      animation: fadeInUp 0.6s ease;
-    }
-
-    .form-success .success-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      display: block;
-    }
-
-    .form-success h3 {
-      font-size: 1.6rem;
-      margin-bottom: 10px;
-      color: #9b6b9e;
-    }
-
-    .form-success p {
-      font-size: 1rem;
-      color: #4a4260;
-    }
-
-    .form-error {
-      color: #c0392b;
-      font-size: 0.82rem;
-      margin-top: 4px;
-      display: none;
-    }
-
-    /* ===== CONTACTS ===== */
-    #contacts {
-      background: #faf9f7;
-      padding: 80px 0;
-    }
-
-    .contacts-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-    }
-
-    .contact-card {
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 16px;
-      padding: 32px 24px;
-      text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    }
-
-    .contact-card:hover {
-      box-shadow: 0 8px 30px rgba(155,107,158,0.1);
-      transform: translateY(-4px);
-    }
-
-    .contact-icon {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .contact-icon svg {
-      width: 36px;
-      height: 36px;
-    }
-
-    .contact-icon-emoji {
-      font-size: 2rem;
-      margin-bottom: 14px;
-      display: block;
-      text-align: center;
-    }
-
-    .contact-card h3 {
-      font-size: 1rem;
-      margin-bottom: 8px;
-      color: #1e1b30;
-    }
-
+    /* Contacts */
+    #contacts { background: #faf9f7; padding: 80px 0; }
+    .contacts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .contact-card { background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; padding: 32px 24px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.03); contain: layout style paint; }
+    .contact-card:hover { box-shadow: 0 8px 30px rgba(155,107,158,0.1); transform: translateY(-4px); }
+    .contact-icon { width: 48px; height: 48px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; }
+    .contact-icon svg { width: 36px; height: 36px; }
+    .contact-icon-emoji { font-size: 2rem; margin-bottom: 14px; display: block; text-align: center; }
+    .contact-card h3 { font-size: 1rem; margin-bottom: 8px; color: #1e1b30; }
     .contact-card a { font-size: 0.92rem; font-weight: 500; }
+    .contact-card p { font-size: 0.85rem; color: #8a7fa0; margin-top: 4px; }
 
-    .contact-card p {
-      font-size: 0.85rem;
-      color: #8a7fa0;
-      margin-top: 4px;
-    }
+    /* Footer */
+    footer { background: #f3eef8; border-top: 1px solid rgba(155,107,158,0.1); padding: 30px 0; text-align: center; }
+    footer p { font-size: 0.82rem; color: #8a7fa0; }
 
-    /* ===== FOOTER ===== */
-    footer {
-      background: #f3eef8;
-      border-top: 1px solid rgba(155,107,158,0.1);
-      padding: 30px 0;
-      text-align: center;
-    }
-
-    footer p {
-      font-size: 0.82rem;
-      color: #8a7fa0;
-    }
-
-    /* ===== DECORATIVE DOTS ===== */
-    .stars {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .star {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: rgba(155,107,158,0.2);
-      border-radius: 50%;
-      animation: float 6s ease-in-out infinite;
-    }
-
+    /* Stars — paused by default */
+    .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+    .star { position: absolute; width: 4px; height: 4px; background: rgba(155,107,158,0.2); border-radius: 50%; animation: float 6s ease-in-out infinite; animation-play-state: paused; }
+    .star.anim-on { animation-play-state: running; }
     .star:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
     .star:nth-child(2) { top: 30%; left: 85%; animation-delay: 1s; }
     .star:nth-child(3) { top: 60%; left: 20%; animation-delay: 2s; }
@@ -1415,40 +321,13 @@
     .star:nth-child(5) { top: 45%; left: 50%; animation-delay: 4s; width: 3px; height: 3px; }
     .star:nth-child(6) { top: 10%; left: 65%; animation-delay: 1.5s; width: 3px; height: 3px; }
 
-    /* ===== MOBILE OVERLAY NAV ===== */
-    .mobile-nav {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: rgba(255,255,255,0.97);
-      backdrop-filter: blur(20px);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 28px;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .mobile-nav.open {
-      display: flex;
-      opacity: 1;
-    }
-
-    .mobile-nav a {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.8rem;
-      color: #2d2a3e;
-      transition: color 0.3s ease;
-    }
-
+    /* Mobile nav */
+    .mobile-nav { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(255,255,255,0.97); backdrop-filter: blur(20px); z-index: 999; align-items: center; justify-content: center; flex-direction: column; gap: 28px; opacity: 0; transition: opacity 0.4s ease; }
+    .mobile-nav.open { display: flex; opacity: 1; }
+    .mobile-nav a { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.8rem; color: #2d2a3e; transition: color 0.3s ease; }
     .mobile-nav a:hover { color: #9b6b9e; }
 
-    /* ===== RESPONSIVE ===== */
+    /* Responsive */
     @media (max-width: 1024px) {
       .hero-inner { flex-direction: column; text-align: center; }
       .hero-photo { flex: 0 0 auto; width: 280px; height: 360px; }
@@ -1469,7 +348,6 @@
       .gift-inner { flex-direction: column; text-align: center; }
       .gift-icon-wrap { flex: 0 0 120px; height: 120px; font-size: 3rem; }
     }
-
     @media (max-width: 768px) {
       nav ul { display: none; }
       .burger { display: flex; }
@@ -1485,7 +363,6 @@
       .certs-grid { grid-template-columns: repeat(2, 1fr); }
       .reviews-intro-photo { flex: 0 0 150px; height: 150px; }
     }
-
     @media (max-width: 480px) {
       .hero-content h1 { font-size: 1.7rem; }
       .hero-photo { width: 240px; height: 300px; }
@@ -1497,11 +374,15 @@
       .cert-card img { height: 200px; }
       .gift-content h2 { font-size: 1.7rem; }
     }
+    /* Reduce motion for users who prefer it */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- ===== HEADER ===== -->
   <header id="header">
     <div class="container">
       <a href="#hero" class="logo">Лилия <span>Ромашина</span></a>
@@ -1516,15 +397,10 @@
           <li><a href="#contacts">Контакты</a></li>
         </ul>
       </nav>
-      <button class="burger" id="burger" aria-label="Меню">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
     </div>
   </header>
 
-  <!-- Mobile Nav Overlay -->
   <div class="mobile-nav" id="mobileNav">
     <a href="#about" class="mobile-link">Обо мне</a>
     <a href="#certificates" class="mobile-link">Сертификаты</a>
@@ -1535,7 +411,6 @@
     <a href="#contacts" class="mobile-link">Контакты</a>
   </div>
 
-  <!-- ===== LIGHTBOX ===== -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox-close" id="lightboxClose">✕</button>
     <button class="lightbox-nav lightbox-prev" id="lightboxPrev">❮</button>
@@ -1545,20 +420,13 @@
 
   <main>
 
-    <!-- ===== HERO ===== -->
+    <!-- HERO — only this image loads immediately -->
     <section id="hero">
-      <div class="stars">
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-        <div class="star"></div>
-      </div>
+      <div class="stars" id="heroStars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
       <div class="container">
         <div class="hero-inner">
           <div class="hero-photo">
-            <img src="img/1.jpg" alt="Лилия Ромашина — проводник высоких энергий, нумеролог" fetchpriority="high">
+            <img src="img/1.jpg" alt="Лилия Ромашина — проводник высоких энергий, нумеролог" fetchpriority="high" width="380" height="500">
           </div>
           <div class="hero-content">
             <p class="hero-welcome">✨ Добро пожаловать! Я рада, что Вселенная привела тебя именно сюда. Это не случайность — это первый шаг к твоей трансформации.</p>
@@ -1570,100 +438,60 @@
       </div>
     </section>
 
-    <!-- ===== ABOUT ===== -->
-    <section id="about">
+    <!-- ABOUT — cv-auto: browser skips rendering until scrolled near -->
+    <section id="about" class="cv-auto">
       <div class="container">
         <div class="about-grid">
           <div class="about-text reveal">
             <span class="section-label">Обо мне</span>
             <h2 class="section-title">Та самая женщина, которая знает: мысли становятся реальностью</h2>
             <div class="divider"></div>
-
             <p>Меня зовут Лилия, и я не просто верю в силу намерения — я <strong>прожила</strong> это. Моя семья, мои дети, вся моя жизнь — результат осознанного выбора и глубокой внутренней работы. Когда в 43 года я приняла решение стать мамой во второй раз, окружающие крутили пальцем у виска. Но я знала: <strong>если сердце говорит «да» — Вселенная найдёт способ</strong>.</p>
-
             <div class="about-highlight">
               <p>«Именно тогда я по-настоящему осознала мощь своей внутренней силы. И поняла: я должна передать это знание дальше.»</p>
             </div>
-
             <p>Жизнь постоянно посылает нам знаки — через числа, через тело, через повторяющиеся ситуации. Большинство людей проходит мимо, не замечая. Я научилась читать эти послания — и хочу <strong>научить тебя</strong>.</p>
-
             <p>Мой путь в духовном развитии прошёл через обучение у сильнейших мастеров и наставников:</p>
-
             <div class="about-masters">
               <span class="master-tag">Александр Свияш</span>
               <span class="master-tag">Анатолий Некрасов</span>
               <span class="master-tag">Мара Баронина</span>
             </div>
           </div>
-
           <div class="about-stats reveal">
-            <div class="stat-card">
-              <span class="stat-number">30+</span>
-              <span class="stat-text">лет на пути осознанности</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">1000+</span>
-              <span class="stat-text">людей, которым помогла изменить жизнь</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">3</span>
-              <span class="stat-text">школы мастеров</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">∞</span>
-              <span class="stat-text">вера в твой потенциал</span>
-            </div>
+            <div class="stat-card"><span class="stat-number">30+</span><span class="stat-text">лет на пути осознанности</span></div>
+            <div class="stat-card"><span class="stat-number">1000+</span><span class="stat-text">людей, которым помогла изменить жизнь</span></div>
+            <div class="stat-card"><span class="stat-number">3</span><span class="stat-text">школы мастеров</span></div>
+            <div class="stat-card"><span class="stat-number">∞</span><span class="stat-text">вера в твой потенциал</span></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== CERTIFICATES ===== -->
-    <section id="certificates">
+    <!-- CERTIFICATES -->
+    <section id="certificates" class="cv-auto">
       <div class="container section-center">
         <span class="section-label reveal">Сертификаты</span>
         <h2 class="section-title reveal">Подтверждение квалификации</h2>
         <div class="divider divider-center"></div>
         <p class="section-subtitle reveal">Каждый сертификат — это ступень моего пути. Обучение у лучших мастеров дало мне инструменты, которыми я делюсь с тобой.</p>
-
         <div class="certs-grid">
-          <div class="cert-card reveal" data-gallery="certs" data-index="0">
-            <img src="diploms/1.jpg" alt="Сертификат Лилии Ромашиной — обучение духовным практикам" loading="lazy" decoding="async">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="1">
-            <img src="diploms/2.jpg" alt="Диплом Лилии Ромашиной — нумерология" loading="lazy" decoding="async">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="2">
-            <img src="diploms/3.jpg" alt="Сертификат Лилии Ромашиной — энергодиагностика" loading="lazy" decoding="async">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="3">
-            <img src="diploms/4.jpg" alt="Диплом Лилии Ромашиной — трансформация сознания" loading="lazy" decoding="async">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="4">
-            <img src="diploms/5.jpg" alt="Сертификат Лилии Ромашиной — духовное развитие и энергопрактики" loading="lazy" decoding="async">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="5">
-            <img src="diploms/6.jpg" alt="Сертификат Лилии Ромашиной — продвинутые духовные практики" loading="lazy" decoding="async">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
-          <div class="cert-card reveal" data-gallery="certs" data-index="6">
-            <img src="diploms/7.jpg" alt="Сертификат Лилии Ромашиной — мастер энергетических практик" loading="lazy" decoding="async">
-            <div class="cert-overlay"><span>🔍</span></div>
-          </div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="0"><img data-src="diploms/1.jpg" alt="Сертификат Лилии Ромашиной 1" width="260" height="280"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="1"><img data-src="diploms/2.jpg" alt="Диплом Лилии Ромашиной 2" width="260" height="280"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="2"><img data-src="diploms/3.jpg" alt="Сертификат Лилии Ромашиной 3" width="260" height="280"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="3"><img data-src="diploms/4.jpg" alt="Диплом Лилии Ромашиной 4" width="260" height="280"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="4"><img data-src="diploms/5.jpg" alt="Сертификат Лилии Ромашиной 5" width="260" height="280"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="5"><img data-src="diploms/6.jpg" alt="Сертификат Лилии Ромашиной 6" width="260" height="280"><div class="cert-overlay"><span>🔍</span></div></div>
+          <div class="cert-card reveal" data-gallery="certs" data-index="6"><img data-src="diploms/7.jpg" alt="Сертификат Лилии Ромашиной 7" width="260" height="280"><div class="cert-overlay"><span>🔍</span></div></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== GIFT: MONEY CODE ===== -->
-    <section id="gift">
+    <!-- GIFT -->
+    <section id="gift" class="cv-auto">
       <div class="container">
         <div class="gift-inner reveal">
-          <div class="gift-icon-wrap">🎁</div>
+          <div class="gift-icon-wrap" id="giftIcon">🎁</div>
           <div class="gift-content">
             <h2>Получи свой <span>личный денежный код</span> в подарок!</h2>
             <p>Каждый из нас пришёл в этот мир с уникальным числовым кодом, который влияет на финансовый поток. Узнай свой денежный код по дате рождения — и открой двери к изобилию. Это бесплатно и займёт всего пару минут!</p>
@@ -1673,50 +501,25 @@
       </div>
     </section>
 
-    <!-- ===== AUDIENCE ===== -->
-    <section id="audience">
+    <!-- AUDIENCE -->
+    <section id="audience" class="cv-auto">
       <div class="container section-center">
         <span class="section-label reveal">Кому подходит</span>
         <h2 class="section-title reveal">Узнаёшь себя?</h2>
         <p class="section-subtitle reveal">Если хотя бы один пункт откликается — значит, ты здесь не случайно. Вселенная уже подала тебе знак.</p>
-
         <div class="audience-grid">
-          <div class="audience-card reveal">
-            <span class="audience-icon">🌀</span>
-            <h3>Потерял(а) себя</h3>
-            <p>Ты чувствуешь, что живёшь не свою жизнь. Внутри — пустота и ощущение, что твоё настоящее предназначение где-то рядом, но ты не можешь его нащупать.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">🔄</span>
-            <h3>День сурка в проблемах</h3>
-            <p>Одни и те же сценарии повторяются снова и снова — в отношениях, здоровье, финансах. Ты устал(а) бороться с симптомами и хочешь найти настоящую причину.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">💫</span>
-            <h3>Тело подаёт сигналы</h3>
-            <p>Болезни и недомогания не уходят, несмотря на лечение? Часто корень — в энергетике. Пора разобраться, что на самом деле говорит тебе твоё тело.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">🤗</span>
-            <h3>Ищешь «своих» людей</h3>
-            <p>Окружение не понимает твоих стремлений. Ты ищешь единомышленников — людей, которые говорят на одном языке с тобой и поддержат на пути роста.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">🚧</span>
-            <h3>Застрял(а) на пути развития</h3>
-            <p>Ты уже многое знаешь о саморазвитии, но результаты не приходят. Кажется, нужен проводник, который поможет пробить невидимый потолок.</p>
-          </div>
-          <div class="audience-card reveal">
-            <span class="audience-icon">🔢</span>
-            <h3>Хочешь знать свой код судьбы</h3>
-            <p>Тебя притягивают числа и знаки? Нумерология и экспресс-диагностика по дате рождения откроют карту твоей жизни — и ключи к успеху, которые ты не замечал(а).</p>
-          </div>
+          <div class="audience-card reveal"><span class="audience-icon">🌀</span><h3>Потерял(а) себя</h3><p>Ты чувствуешь, что живёшь не свою жизнь. Внутри — пустота и ощущение, что твоё настоящее предназначение где-то рядом, но ты не можешь его нащупать.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">🔄</span><h3>День сурка в проблемах</h3><p>Одни и те же сценарии повторяются снова и снова — в отношениях, здоровье, финансах. Ты устал(а) бороться с симптомами и хочешь найти настоящую причину.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">💫</span><h3>Тело подаёт сигналы</h3><p>Болезни и недомогания не уходят, несмотря на лечение? Часто корень — в энергетике. Пора разобраться, что на самом деле говорит тебе твоё тело.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">🤗</span><h3>Ищешь «своих» людей</h3><p>Окружение не понимает твоих стремлений. Ты ищешь единомышленников — людей, которые говорят на одном языке с тобой и поддержат на пути роста.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">🚧</span><h3>Застрял(а) на пути развития</h3><p>Ты уже многое знаешь о саморазвитии, но результаты не приходят. Кажется, нужен проводник, который поможет пробить невидимый потолок.</p></div>
+          <div class="audience-card reveal"><span class="audience-icon">🔢</span><h3>Хочешь знать свой код судьбы</h3><p>Тебя притягивают числа и знаки? Нумерология и экспресс-диагностика по дате рождения откроют карту твоей жизни — и ключи к успеху, которые ты не замечал(а).</p></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== SERVICES ===== -->
-    <section id="services">
+    <!-- SERVICES -->
+    <section id="services" class="cv-auto">
       <div class="container">
         <div class="section-center">
           <span class="section-label reveal">Что я предлагаю</span>
@@ -1725,102 +528,40 @@
           <p class="section-subtitle reveal">Каждый инструмент проверен на практике — на моём собственном пути и на пути сотен людей, которым я помогла.</p>
         </div>
         <div class="services-grid">
-          <div class="service-item reveal">
-            <div class="service-icon">📡</div>
-            <div>
-              <h3>Развивающие эфиры и онлайн-встречи</h3>
-              <p>Регулярные прямые эфиры в сообществе «Трансформация», где мы исследуем глубины сознания и открываем новые горизонты вместе.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">🔢</div>
-            <div>
-              <h3>Нумерология</h3>
-              <p>Узнай тайны чисел своей судьбы. Раскрой секрет своего уникального пути к успеху, гармонии и изобилию.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">⚡</div>
-            <div>
-              <h3>Анализ энергетики тела</h3>
-              <p>Почему возникают болезни и повторяющиеся проблемы? Найдём глубинные энергетические причины и путь к исцелению.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">📅</div>
-            <div>
-              <h3>Экспресс-диагностика по дате рождения</h3>
-              <p>Всего одно число способно перевернуть твоё представление о себе. Быстрый и точный разбор, который запускает трансформацию.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">💜</div>
-            <div>
-              <h3>Сообщество единомышленников</h3>
-              <p>Люди, чьи сердца бьются в унисон с твоим. Поддержка, общение, обмен опытом — всё, что нужно на пути осознанности.</p>
-            </div>
-          </div>
-          <div class="service-item reveal">
-            <div class="service-icon">📣</div>
-            <div>
-              <h3>Реклама и партнёрство</h3>
-              <p>Хочешь провести свой эфир или разместить рекламу в нашем сообществе? Свяжись со мной — обсудим возможности сотрудничества.</p>
-            </div>
-          </div>
+          <div class="service-item reveal"><div class="service-icon">📡</div><div><h3>Развивающие эфиры и онлайн-встречи</h3><p>Регулярные прямые эфиры в сообществе «Трансформация», где мы исследуем глубины сознания и открываем новые горизонты вместе.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">🔢</div><div><h3>Нумерология</h3><p>Узнай тайны чисел своей судьбы. Раскрой секрет своего уникального пути к успеху, гармонии и изобилию.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">⚡</div><div><h3>Анализ энергетики тела</h3><p>Почему возникают болезни и повторяющиеся проблемы? Найдём глубинные энергетические причины и путь к исцелению.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">📅</div><div><h3>Экспресс-диагностика по дате рождения</h3><p>Всего одно число способно перевернуть твоё представление о себе. Быстрый и точный разбор, который запускает трансформацию.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">💜</div><div><h3>Сообщество единомышленников</h3><p>Люди, чьи сердца бьются в унисон с твоим. Поддержка, общение, обмен опытом — всё, что нужно на пути осознанности.</p></div></div>
+          <div class="service-item reveal"><div class="service-icon">📣</div><div><h3>Реклама и партнёрство</h3><p>Хочешь провести свой эфир или разместить рекламу в нашем сообществе? Свяжись со мной — обсудим возможности сотрудничества.</p></div></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== RESULTS ===== -->
-    <section id="results">
+    <!-- RESULTS -->
+    <section id="results" class="cv-auto">
       <div class="container section-center">
         <span class="section-label reveal">Результаты</span>
         <h2 class="section-title reveal">Что ты получишь, пройдя этот путь</h2>
         <div class="divider divider-center"></div>
         <p class="section-subtitle reveal">Это не абстрактные обещания — это реальные изменения, которые происходят, когда ты начинаешь работать со своей энергией осознанно.</p>
-
         <div class="results-grid">
-          <div class="result-card reveal">
-            <span class="result-num">1</span>
-            <h3>Ясность предназначения</h3>
-            <p>Ты наконец поймёшь, зачем пришёл(а) в этот мир и куда направить свою энергию. Тумана больше не будет — только чёткий путь.</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">2</span>
-            <h3>Свобода от негативных сценариев</h3>
-            <p>Повторяющиеся проблемы уйдут, потому что ты уберёшь их причину — на уровне энергетики, а не симптомов.</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">3</span>
-            <h3>Внутренняя сила и уверенность</h3>
-            <p>Ты почувствуешь опору внутри себя. Перестанешь искать ответы снаружи — потому что они всегда были в тебе.</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">4</span>
-            <h3>Гармония тела и духа</h3>
-            <p>Поймёшь энергетические причины болезней и научишься трансформировать их. Тело перестанет «кричать» — оно начнёт «петь».</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">5</span>
-            <h3>Поддерживающее окружение</h3>
-            <p>Ты станешь частью сообщества людей, которые вдохновляют, понимают и помогают расти — каждый день.</p>
-          </div>
-          <div class="result-card reveal">
-            <span class="result-num">6</span>
-            <h3>Практические инструменты</h3>
-            <p>Нумерология, энергодиагностика, знаки Вселенной — ты получишь конкретные инструменты, которые работают в повседневной жизни.</p>
-          </div>
+          <div class="result-card reveal"><span class="result-num">1</span><h3>Ясность предназначения</h3><p>Ты наконец поймёшь, зачем пришёл(а) в этот мир и куда направить свою энергию. Тумана больше не будет — только чёткий путь.</p></div>
+          <div class="result-card reveal"><span class="result-num">2</span><h3>Свобода от негативных сценариев</h3><p>Повторяющиеся проблемы уйдут, потому что ты уберёшь их причину — на уровне энергетики, а не симптомов.</p></div>
+          <div class="result-card reveal"><span class="result-num">3</span><h3>Внутренняя сила и уверенность</h3><p>Ты почувствуешь опору внутри себя. Перестанешь искать ответы снаружи — потому что они всегда были в тебе.</p></div>
+          <div class="result-card reveal"><span class="result-num">4</span><h3>Гармония тела и духа</h3><p>Поймёшь энергетические причины болезней и научишься трансформировать их. Тело перестанет «кричать» — оно начнёт «петь».</p></div>
+          <div class="result-card reveal"><span class="result-num">5</span><h3>Поддерживающее окружение</h3><p>Ты станешь частью сообщества людей, которые вдохновляют, понимают и помогают расти — каждый день.</p></div>
+          <div class="result-card reveal"><span class="result-num">6</span><h3>Практические инструменты</h3><p>Нумерология, энергодиагностика, знаки Вселенной — ты получишь конкретные инструменты, которые работают в повседневной жизни.</p></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== REVIEWS ===== -->
-    <section id="reviews">
+    <!-- REVIEWS -->
+    <section id="reviews" class="cv-auto">
       <div class="container">
-
         <div class="reviews-intro reveal">
           <div class="reviews-intro-photo">
-            <img src="img/2.jpg" alt="Лилия Ромашина — отзывы клиентов" loading="lazy" decoding="async">
+            <img data-src="img/2.jpg" alt="Лилия Ромашина — отзывы клиентов" width="200" height="200">
           </div>
           <div class="reviews-intro-text">
             <span class="section-label">Отзывы</span>
@@ -1831,159 +572,94 @@
 
         <p class="video-section-label reveal">🎬 Видеоотзывы</p>
 
-        <div class="videos-grid">
+        <div class="videos-grid" id="videosGrid">
           <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/5494bb8b3d84e504c3ad63e6ed93606a/?p=yghWSe1sfMM02ucm9DIIMQ" data-video-id="5494bb8b3d84e504c3ad63e6ed93606a">
             <button class="video-close-btn" title="Закрыть видео">✕</button>
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
+            <div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div>
           </div>
           <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/4e4f2b04a190282e400839c9ebcbbad6/?p=ZBKuVl6Z1GyCaagq8TrZwQ" data-video-id="4e4f2b04a190282e400839c9ebcbbad6">
             <button class="video-close-btn" title="Закрыть видео">✕</button>
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
+            <div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div>
           </div>
           <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/c0c7bf42afc8613b4b75c56b47e5ef1d/?p=YV4qzqTnQOEGDQRkKj5J6A" data-video-id="c0c7bf42afc8613b4b75c56b47e5ef1d">
             <button class="video-close-btn" title="Закрыть видео">✕</button>
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
+            <div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div>
           </div>
           <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/28be5e0a54d98f71bcddfd7a598d711c/?p=4GIjEdXaSogHXJgP7mJLZg" data-video-id="28be5e0a54d98f71bcddfd7a598d711c">
             <button class="video-close-btn" title="Закрыть видео">✕</button>
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
+            <div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div>
           </div>
           <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/bd78e163cba33cce877e7f48e915617e/?p=aVvra1hDsSV1cctkG2qLMg" data-video-id="bd78e163cba33cce877e7f48e915617e">
             <button class="video-close-btn" title="Закрыть видео">✕</button>
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
+            <div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div>
           </div>
           <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/20a2955f0d83dd3fdf0037a62a1ec29c/?p=zE4LFsrPCiJFT8kHBUWDug" data-video-id="20a2955f0d83dd3fdf0037a62a1ec29c">
             <button class="video-close-btn" title="Закрыть видео">✕</button>
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
+            <div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div>
           </div>
           <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/381475147b7b25520f39f230a7e2cc26/?p=IU2SYBmDXggp0ZvfiObwOQ" data-video-id="381475147b7b25520f39f230a7e2cc26">
             <button class="video-close-btn" title="Закрыть видео">✕</button>
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
+            <div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div>
           </div>
           <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/eb04f262027b3c6aae4f49da941d19a0/?p=GHZZB8G7lMEnSH4Gb3ci4A" data-video-id="eb04f262027b3c6aae4f49da941d19a0">
             <button class="video-close-btn" title="Закрыть видео">✕</button>
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
+            <div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div>
           </div>
           <div class="video-card reveal" data-embed="https://rutube.ru/play/embed/e391501e3293aa083835e7502802e877/?p=GTwixZTvedblKHHZkjraTw" data-video-id="e391501e3293aa083835e7502802e877">
             <button class="video-close-btn" title="Закрыть видео">✕</button>
-            <div class="video-placeholder">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
-              <span class="video-label">Нажмите для воспроизведения</span>
-            </div>
+            <div class="video-placeholder"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div><span class="video-label">Нажмите для воспроизведения</span></div>
           </div>
         </div>
 
-        <!-- Telegram Reviews -->
         <p class="review-images-label reveal">
           <svg style="display:inline-block;vertical-align:middle;width:22px;height:22px;margin-right:6px;" viewBox="0 0 24 24" fill="#9b6b9e"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg>
           Отзывы в Телеграм
         </p>
 
         <div class="review-images-grid">
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="0">
-            <img src="reviews/1.jpg" alt="Отзыв клиента Лилии Ромашиной 1" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="1">
-            <img src="reviews/2.jpg" alt="Отзыв клиента Лилии Ромашиной 2" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="2">
-            <img src="reviews/3.jpg" alt="Отзыв клиента Лилии Ромашиной 3" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="3">
-            <img src="reviews/4.jpg" alt="Отзыв клиента Лилии Ромашиной 4" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="4">
-            <img src="reviews/5.jpg" alt="Отзыв клиента Лилии Ромашиной 5" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="5">
-            <img src="reviews/6.jpg" alt="Отзыв клиента Лилии Ромашиной 6" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="6">
-            <img src="reviews/7.jpg" alt="Отзыв клиента Лилии Ромашиной 7" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="7">
-            <img src="reviews/8.jpg" alt="Отзыв клиента Лилии Ромашиной 8" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="8">
-            <img src="reviews/9.jpg" alt="Отзыв клиента Лилии Ромашиной 9" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
-          <div class="review-img-card reveal" data-gallery="reviews" data-index="9">
-            <img src="reviews/10.jpg" alt="Отзыв клиента Лилии Ромашиной 10" loading="lazy" decoding="async">
-            <div class="review-img-overlay"><span>🔍</span></div>
-          </div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="0"><img data-src="reviews/1.jpg" alt="Отзыв 1" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="1"><img data-src="reviews/2.jpg" alt="Отзыв 2" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="2"><img data-src="reviews/3.jpg" alt="Отзыв 3" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="3"><img data-src="reviews/4.jpg" alt="Отзыв 4" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="4"><img data-src="reviews/5.jpg" alt="Отзыв 5" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="5"><img data-src="reviews/6.jpg" alt="Отзыв 6" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="6"><img data-src="reviews/7.jpg" alt="Отзыв 7" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="7"><img data-src="reviews/8.jpg" alt="Отзыв 8" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="8"><img data-src="reviews/9.jpg" alt="Отзыв 9" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
+          <div class="review-img-card reveal" data-gallery="reviews" data-index="9"><img data-src="reviews/10.jpg" alt="Отзыв 10" width="200" height="220"><div class="review-img-overlay"><span>🔍</span></div></div>
         </div>
-
       </div>
     </section>
 
-    <!-- ===== SIGNUP FORM ===== -->
-    <section id="signup">
+    <!-- SIGNUP FORM -->
+    <section id="signup" class="cv-auto">
       <div class="container">
         <div class="signup-inner">
           <div class="signup-photo reveal">
-            <img src="img/3.jpg" alt="Запись на консультацию к Лилии Ромашиной — проводнику высоких энергий" loading="lazy" decoding="async">
+            <img data-src="img/3.jpg" alt="Запись на консультацию к Лилии Ромашиной" width="340" height="440">
           </div>
-
           <div class="signup-form-wrap reveal">
             <span class="section-label">Запись</span>
             <h2 class="section-title">Запишись на персональную консультацию</h2>
             <p class="form-sub">Оставь свои данные — я свяжусь с тобой в течение 24 часов. Первый шаг к трансформации начинается здесь 💫</p>
-
             <form id="leadForm" novalidate>
               <div class="form-group">
                 <label for="userName">Твоё имя *</label>
                 <input type="text" id="userName" name="name" placeholder="Как тебя зовут?" required minlength="2" maxlength="20" autocomplete="name">
                 <div class="form-error" id="nameError">Введи имя (только буквы, от 2 до 20 символов)</div>
               </div>
-
               <div class="form-group">
                 <label for="userContact">Телефон *</label>
                 <input type="tel" id="userContact" name="contact" inputmode="tel" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
                 <div class="form-error" id="contactError">Введи корректный номер телефона</div>
               </div>
-
               <div class="form-group">
                 <label for="userMessage">Сообщение</label>
                 <textarea id="userMessage" name="message" placeholder="Расскажи коротко, что тебя привело сюда... (необязательно)" maxlength="1000"></textarea>
                 <div class="char-counter" id="charCounter">0 / 1000</div>
               </div>
-
               <button type="submit" class="btn-submit" id="submitBtn">Отправить заявку</button>
             </form>
-
             <div class="form-success" id="formSuccess">
               <span class="success-icon">💫</span>
               <h3>Спасибо!</h3>
@@ -1994,25 +670,20 @@
       </div>
     </section>
 
-    <!-- ===== CONTACTS ===== -->
-    <section id="contacts">
+    <!-- CONTACTS -->
+    <section id="contacts" class="cv-auto">
       <div class="container section-center">
         <span class="section-label reveal">Контакты</span>
         <h2 class="section-title reveal">Свяжись со мной</h2>
         <div class="divider divider-center"></div>
         <p class="section-subtitle reveal">Выбери удобный способ связи — я всегда на связи и открыта к общению.</p>
-
         <div class="contacts-grid">
-
-          <!-- Телефон -->
           <div class="contact-card reveal">
             <span class="contact-icon-emoji">📞</span>
             <h3>Телефон</h3>
             <a href="tel:+79160607405">+7 916 060 74 05</a>
             <p>Я живу в Москве</p>
           </div>
-
-          <!-- Telegram личный -->
           <div class="contact-card reveal">
             <div class="contact-icon">
               <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg>
@@ -2021,17 +692,10 @@
             <a href="https://t.me/Lilia_lvovna" target="_blank" rel="noopener">@Lilia_lvovna</a>
             <p>Напиши мне лично</p>
           </div>
-
-          <!-- Max Messenger -->
           <div class="contact-card reveal">
             <div class="contact-icon">
               <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="maxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#3B7DED"/>
-                    <stop offset="100%" stop-color="#8B5CF6"/>
-                  </linearGradient>
-                </defs>
+                <defs><linearGradient id="maxGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3B7DED"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient></defs>
                 <rect width="48" height="48" rx="12" fill="url(#maxGrad)"/>
                 <path d="M14 33l3.2-6.4C14.8 24.2 13 21 13 17.5 13 11.7 18 7 24 7s11 4.7 11 10.5S30 28 24 28c-1.6 0-3.1-.3-4.5-.9L14 33Z" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -2040,8 +704,6 @@
             <a href="tel:+79160607405">+7 916 060 74 05</a>
             <p>Найди меня по номеру</p>
           </div>
-
-          <!-- Канал Трансформация -->
           <div class="contact-card reveal">
             <div class="contact-icon">
               <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M11.944 0A12 12 0 1 0 24 12.056A12.013 12.013 0 0 0 11.944 0Zm5.655 7.22c-.18 1.897-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.064-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.479.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.244-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635c.099-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472Z"/></svg>
@@ -2050,65 +712,106 @@
             <a href="https://t.me/transformation_lily" target="_blank" rel="noopener">Присоединяйся к каналу</a>
             <p>Эфиры, практики, общение</p>
           </div>
-
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ===== FOOTER ===== -->
   <footer>
     <div class="container">
       <p>© 2026 Лилия Ромашина. Все права защищены.</p>
     </div>
   </footer>
 
-  <!-- ===== JAVASCRIPT ===== -->
   <script>
-    // ===== STICKY HEADER =====
+    // ===== SINGLE IntersectionObserver for lazy images + reveal + animation control =====
+    (function() {
+      var imgObserver = new IntersectionObserver(function(entries) {
+        for (var i = 0; i < entries.length; i++) {
+          var entry = entries[i];
+          if (entry.isIntersecting) {
+            var el = entry.target;
+            // Lazy image
+            if (el.hasAttribute('data-src')) {
+              el.src = el.getAttribute('data-src');
+              el.onload = function() { this.classList.add('loaded'); };
+              el.removeAttribute('data-src');
+            }
+            imgObserver.unobserve(el);
+          }
+        }
+      }, { rootMargin: '300px 0px' });
+
+      var revealObserver = new IntersectionObserver(function(entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            entries[i].target.classList.add('visible');
+            revealObserver.unobserve(entries[i].target);
+          }
+        }
+      }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+      // Observe lazy images
+      var lazyImgs = document.querySelectorAll('img[data-src]');
+      for (var i = 0; i < lazyImgs.length; i++) imgObserver.observe(lazyImgs[i]);
+
+      // Observe reveal elements
+      var reveals = document.querySelectorAll('.reveal');
+      for (var i = 0; i < reveals.length; i++) revealObserver.observe(reveals[i]);
+    })();
+
+    // ===== Start star animations after first paint (non-blocking) =====
+    requestAnimationFrame(function() {
+      var stars = document.querySelectorAll('.star');
+      for (var i = 0; i < stars.length; i++) stars[i].classList.add('anim-on');
+    });
+
+    // ===== Activate gift pulse only when visible =====
+    var giftIcon = document.getElementById('giftIcon');
+    if (giftIcon) {
+      var giftObs = new IntersectionObserver(function(entries) {
+        giftIcon.classList.toggle('anim-on', entries[0].isIntersecting);
+      }, { rootMargin: '100px 0px' });
+      giftObs.observe(giftIcon);
+    }
+
+    // ===== STICKY HEADER — throttled with rAF =====
     var header = document.getElementById('header');
+    var scrollTicking = false;
     window.addEventListener('scroll', function() {
-      header.classList.toggle('scrolled', window.scrollY > 60);
+      if (!scrollTicking) {
+        scrollTicking = true;
+        requestAnimationFrame(function() {
+          header.classList.toggle('scrolled', window.scrollY > 60);
+          scrollTicking = false;
+        });
+      }
     }, { passive: true });
 
     // ===== BURGER MENU =====
     var burger = document.getElementById('burger');
     var mobileNav = document.getElementById('mobileNav');
-    var mobileLinks = document.querySelectorAll('.mobile-link');
-
     burger.addEventListener('click', function() {
       burger.classList.toggle('active');
       mobileNav.classList.toggle('open');
       document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
     });
-
-    mobileLinks.forEach(function(link) {
-      link.addEventListener('click', function() {
+    var mobileLinks = document.querySelectorAll('.mobile-link');
+    for (var i = 0; i < mobileLinks.length; i++) {
+      mobileLinks[i].addEventListener('click', function() {
         burger.classList.remove('active');
         mobileNav.classList.remove('open');
         document.body.style.overflow = '';
       });
-    });
+    }
 
-    // ===== SCROLL REVEAL =====
-    var revealObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
-
-    document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
-
-    // ===== STOP VIDEO HELPER =====
+    // ===== VIDEO HELPERS =====
     function stopVideo(card) {
       if (!card || !card.classList.contains('playing')) return;
       var iframe = card.querySelector('iframe');
       if (iframe) {
-        try { iframe.contentWindow.postMessage(JSON.stringify({type:'player:stop', data:{}}), '*'); } catch(e) {}
+        try { iframe.contentWindow.postMessage(JSON.stringify({type:'player:stop',data:{}}), '*'); } catch(e) {}
         setTimeout(function() { iframe.remove(); }, 50);
       }
       var ph = card.querySelector('.video-placeholder');
@@ -2116,48 +819,66 @@
       card.classList.remove('playing');
     }
 
-    // ===== LOAD VIDEO THUMBNAILS FROM RUTUBE API =====
-    (function() {
-      document.querySelectorAll('.video-card[data-video-id]').forEach(function(card) {
-        var videoId = card.getAttribute('data-video-id');
-        if (!videoId) return;
-        fetch('https://rutube.ru/api/video/' + videoId + '/')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data && data.thumbnail_url) {
-            var placeholder = card.querySelector('.video-placeholder');
-            if (!placeholder) return;
-            var img = document.createElement('img');
-            img.className = 'video-thumb';
-            img.alt = 'Превью видео';
-            img.loading = 'lazy';
-            img.decoding = 'async';
-            img.src = data.thumbnail_url;
-            img.onload = function() {
-              placeholder.insertBefore(img, placeholder.firstChild);
-              placeholder.classList.add('has-thumb');
-            };
-            img.onerror = function() { img.remove(); };
+    // ===== LAZY LOAD VIDEO THUMBNAILS — staggered, only when section visible =====
+    var thumbsLoaded = false;
+    var videosGrid = document.getElementById('videosGrid');
+    if (videosGrid) {
+      var videoSectionObserver = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting && !thumbsLoaded) {
+          thumbsLoaded = true;
+          videoSectionObserver.disconnect();
+          var cards = document.querySelectorAll('.video-card[data-video-id]');
+          // Stagger: load 3 at a time with 200ms delay between batches
+          for (var i = 0; i < cards.length; i++) {
+            (function(card, delay) {
+              setTimeout(function() {
+                var videoId = card.getAttribute('data-video-id');
+                if (!videoId) return;
+                fetch('https://rutube.ru/api/video/' + videoId + '/')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                  if (data && data.thumbnail_url) {
+                    var placeholder = card.querySelector('.video-placeholder');
+                    if (!placeholder) return;
+                    var img = document.createElement('img');
+                    img.className = 'video-thumb';
+                    img.alt = 'Превью видео';
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
+                    img.src = data.thumbnail_url;
+                    img.onload = function() {
+                      placeholder.insertBefore(img, placeholder.firstChild);
+                      placeholder.classList.add('has-thumb');
+                    };
+                    img.onerror = function() { img.remove(); };
+                  }
+                })
+                .catch(function() {});
+              }, delay);
+            })(cards[i], Math.floor(i / 3) * 200);
           }
-        })
-        .catch(function() {});
-      });
-    })();
+        }
+      }, { rootMargin: '600px 0px' });
+      videoSectionObserver.observe(videosGrid);
+    }
 
-    // ===== VIDEO CLOSE BUTTON =====
-    document.querySelectorAll('.video-close-btn').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
+    // ===== VIDEO CLOSE =====
+    var closeButtons = document.querySelectorAll('.video-close-btn');
+    for (var i = 0; i < closeButtons.length; i++) {
+      closeButtons[i].addEventListener('click', function(e) {
         e.stopPropagation();
         stopVideo(this.closest('.video-card'));
       });
-    });
+    }
 
-    // ===== VIDEO CLICK-TO-PLAY =====
-    document.querySelectorAll('.video-card').forEach(function(card) {
-      card.addEventListener('click', function(e) {
+    // ===== VIDEO PLAY =====
+    var videoCards = document.querySelectorAll('.video-card');
+    for (var i = 0; i < videoCards.length; i++) {
+      videoCards[i].addEventListener('click', function(e) {
         if (e.target.closest('.video-close-btn')) return;
         if (this.classList.contains('playing')) return;
-        document.querySelectorAll('.video-card.playing').forEach(function(other) { stopVideo(other); });
+        var playing = document.querySelectorAll('.video-card.playing');
+        for (var j = 0; j < playing.length; j++) stopVideo(playing[j]);
         var embedUrl = this.getAttribute('data-embed');
         if (!embedUrl) return;
         var iframe = document.createElement('iframe');
@@ -2168,40 +889,32 @@
         this.appendChild(iframe);
         this.classList.add('playing');
       });
-    });
+    }
 
     // ===== LIGHTBOX =====
     var lightbox = document.getElementById('lightbox');
     var lightboxImg = document.getElementById('lightboxImg');
-    var lightboxClose = document.getElementById('lightboxClose');
-    var lightboxPrev = document.getElementById('lightboxPrev');
-    var lightboxNext = document.getElementById('lightboxNext');
     var currentGallery = [];
     var currentIndex = 0;
     var galleries = {};
 
-    document.querySelectorAll('[data-gallery]').forEach(function(el) {
-      var name = el.getAttribute('data-gallery');
+    var galleryEls = document.querySelectorAll('[data-gallery]');
+    for (var i = 0; i < galleryEls.length; i++) {
+      var name = galleryEls[i].getAttribute('data-gallery');
       if (!galleries[name]) galleries[name] = [];
-      galleries[name].push(el.querySelector('img').src);
-    });
+      var img = galleryEls[i].querySelector('img');
+      galleries[name].push(img.getAttribute('data-src') || img.src);
+    }
 
-    document.querySelectorAll('[data-gallery]').forEach(function(el) {
-      el.addEventListener('click', function() {
-        var name = this.getAttribute('data-gallery');
-        var index = parseInt(this.getAttribute('data-index'));
-        currentGallery = galleries[name];
-        currentIndex = index;
-        showLightboxImage();
+    for (var i = 0; i < galleryEls.length; i++) {
+      galleryEls[i].addEventListener('click', function() {
+        currentGallery = galleries[this.getAttribute('data-gallery')];
+        currentIndex = parseInt(this.getAttribute('data-index'));
+        lightboxImg.src = currentGallery[currentIndex];
         lightbox.classList.add('open');
         document.body.style.overflow = 'hidden';
       });
-    });
-
-    function showLightboxImage() { lightboxImg.src = currentGallery[currentIndex]; }
-
-    lightboxClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
+    }
 
     function closeLightbox() {
       lightbox.classList.remove('open');
@@ -2209,63 +922,51 @@
       lightboxImg.src = '';
     }
 
-    lightboxPrev.addEventListener('click', function(e) {
+    document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
+    document.getElementById('lightboxPrev').addEventListener('click', function(e) {
       e.stopPropagation();
       currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
-      showLightboxImage();
+      lightboxImg.src = currentGallery[currentIndex];
     });
-
-    lightboxNext.addEventListener('click', function(e) {
+    document.getElementById('lightboxNext').addEventListener('click', function(e) {
       e.stopPropagation();
       currentIndex = (currentIndex + 1) % currentGallery.length;
-      showLightboxImage();
+      lightboxImg.src = currentGallery[currentIndex];
     });
-
     document.addEventListener('keydown', function(e) {
       if (!lightbox.classList.contains('open')) return;
       if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length; showLightboxImage(); }
-      if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % currentGallery.length; showLightboxImage(); }
+      if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length; lightboxImg.src = currentGallery[currentIndex]; }
+      if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % currentGallery.length; lightboxImg.src = currentGallery[currentIndex]; }
     });
 
-    // ===== INPUT: ИМЯ =====
+    // ===== NAME INPUT =====
     var nameInput = document.getElementById('userName');
     nameInput.addEventListener('input', function() {
       this.value = this.value.replace(/[^a-zA-Zа-яА-ЯёЁ\s\-]/g, '');
       if (this.value.length > 20) this.value = this.value.slice(0, 20);
     });
 
-    // ===== INPUT: ТЕЛЕФОН =====
+    // ===== PHONE INPUT =====
     var contactInput = document.getElementById('userContact');
-
     contactInput.addEventListener('input', function() {
-      var digits = this.value.replace(/\D/g, '');
-      if (digits.length > 0 && digits[0] === '8') digits = '7' + digits.slice(1);
-      if (digits.length > 11) digits = digits.slice(0, 11);
+      var d = this.value.replace(/\D/g, '');
+      if (d.length > 0 && d[0] === '8') d = '7' + d.slice(1);
+      if (d.length > 11) d = d.slice(0, 11);
       var f = '';
-      if (digits.length === 0) f = '';
-      else if (digits.length <= 1) f = '+' + digits;
-      else if (digits.length <= 4) f = '+' + digits[0] + ' (' + digits.slice(1);
-      else if (digits.length <= 7) f = '+' + digits[0] + ' (' + digits.slice(1, 4) + ') ' + digits.slice(4);
-      else if (digits.length <= 9) f = '+' + digits[0] + ' (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7);
-      else f = '+' + digits[0] + ' (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7, 9) + '-' + digits.slice(9, 11);
+      if (d.length === 0) f = '';
+      else if (d.length <= 1) f = '+' + d;
+      else if (d.length <= 4) f = '+' + d[0] + ' (' + d.slice(1);
+      else if (d.length <= 7) f = '+' + d[0] + ' (' + d.slice(1,4) + ') ' + d.slice(4);
+      else if (d.length <= 9) f = '+' + d[0] + ' (' + d.slice(1,4) + ') ' + d.slice(4,7) + '-' + d.slice(7);
+      else f = '+' + d[0] + ' (' + d.slice(1,4) + ') ' + d.slice(4,7) + '-' + d.slice(7,9) + '-' + d.slice(9,11);
       this.value = f;
     });
-
-    contactInput.addEventListener('focus', function() {
-      if (this.value === '') this.value = '+7';
-    });
-
-    contactInput.addEventListener('paste', function(e) {
+    contactInput.addEventListener('focus', function() { if (this.value === '') this.value = '+7'; });
+    contactInput.addEventListener('paste', function() {
       var self = this;
-      setTimeout(function() {
-        var digits = self.value.replace(/\D/g, '');
-        if (digits.length > 0 && digits[0] === '8') digits = '7' + digits.slice(1);
-        if (digits.length > 11) digits = digits.slice(0, 11);
-        var ev = new Event('input', { bubbles: true });
-        self.value = digits;
-        self.dispatchEvent(ev);
-      }, 0);
+      setTimeout(function() { self.dispatchEvent(new Event('input', {bubbles:true})); }, 0);
     });
 
     // ===== TEXTAREA COUNTER =====
@@ -2279,116 +980,58 @@
       else if (len >= 800) charCounter.classList.add('warn');
     });
 
-    // =====================================================
-    // ===== FORM HANDLING — BULLETPROOF MOBILE SEND =====
-    // =====================================================
+    // ===== FORM HANDLING — ORIGINAL TELEGRAM LOGIC =====
     var form = document.getElementById('leadForm');
     var submitBtn = document.getElementById('submitBtn');
     var formSuccess = document.getElementById('formSuccess');
     var nameError = document.getElementById('nameError');
     var contactError = document.getElementById('contactError');
-    var isSubmitting = false;
 
     function showError(el) { el.style.display = 'block'; }
     function hideError(el) { el.style.display = 'none'; }
 
-    // Telegram Bot config
+    // Telegram config
     var BOT_TOKEN = '8782195281:AAGM0yEBGY_2yIDK8XRjleyCi_ljEwN8uow';
     var CHAT_ID = '5569439365';
+    var TG_URL = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
 
-    // ---- METHOD 1: navigator.sendBeacon (most reliable on mobile) ----
-    function sendViaBeacon(text) {
-      try {
-        var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage';
-        var payload = JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'HTML' });
-        var blob = new Blob([payload], { type: 'application/json' });
-        return navigator.sendBeacon(url, blob);
-      } catch (e) {
-        return false;
-      }
-    }
+    function sendToTelegram(payload, retries) {
+      retries = retries || 0;
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function() { controller.abort(); }, 10000);
 
-    // ---- METHOD 2: XMLHttpRequest sync (guaranteed to complete before page changes) ----
-    function sendViaXHRSync(text) {
-      try {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', false);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify({ chat_id: CHAT_ID, text: text }));
-        return xhr.status === 200;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    // ---- METHOD 3: fetch with keepalive (works on modern browsers) ----
-    function sendViaFetch(text) {
-      try {
-        fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: CHAT_ID, text: text }),
-          keepalive: true
-        }).catch(function() {});
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    // ---- METHOD 4: Image pixel GET (ultimate fallback) ----
-    function sendViaImage(text) {
-      try {
-        var img = new Image();
-        var encodedText = encodeURIComponent(text);
-        img.src = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodedText;
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    // ---- MAIN: Try all methods in order ----
-    function sendToTelegram(text) {
-      var sent = false;
-
-      // 1. sendBeacon — best for mobile, survives page changes
-      if (navigator.sendBeacon) {
-        sent = sendViaBeacon(text);
-      }
-
-      // 2. If beacon failed or unavailable, try sync XHR
-      if (!sent) {
-        sent = sendViaXHRSync(text);
-      }
-
-      // 3. If sync XHR failed, try async fetch with keepalive
-      if (!sent) {
-        sent = sendViaFetch(text);
-      }
-
-      // 4. Ultimate fallback — Image pixel GET request
-      if (!sent) {
-        sendViaImage(text);
-      }
-
-      // 5. ALWAYS also fire a delayed async fetch as insurance
-      setTimeout(function() {
-        try {
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', true);
-          xhr.timeout = 30000;
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.send(JSON.stringify({ chat_id: CHAT_ID, text: text + '\n\n(дубль-проверка)' }));
-        } catch(e) {}
-      }, 2000);
+      fetch(TG_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        signal: controller.signal,
+        keepalive: true
+      })
+      .then(function(response) {
+        clearTimeout(timeoutId);
+        return response.json();
+      })
+      .then(function(result) {
+        if (result.ok) {
+          console.log('Telegram: сообщение доставлено');
+        } else {
+          console.warn('Telegram ответ:', result.description);
+          if (retries < 2) {
+            setTimeout(function() { sendToTelegram(payload, retries + 1); }, 2000);
+          }
+        }
+      })
+      .catch(function(err) {
+        clearTimeout(timeoutId);
+        console.warn('Telegram сеть:', err.message);
+        if (retries < 2) {
+          setTimeout(function() { sendToTelegram(payload, retries + 1); }, 3000);
+        }
+      });
     }
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
-
-      // Prevent double submit on mobile (double-tap)
-      if (isSubmitting) return;
 
       hideError(nameError);
       hideError(contactError);
@@ -2397,6 +1040,7 @@
       var contactRaw = contactInput.value.trim();
       var message = messageInput.value.trim();
       var digits = contactRaw.replace(/\D/g, '');
+
       var isValid = true;
 
       if (name.length < 2 || name.length > 20 || !/[a-zA-Zа-яА-ЯёЁ]{2,}/.test(name)) {
@@ -2411,38 +1055,45 @@
 
       if (!isValid) return;
 
-      // Lock submit
-      isSubmitting = true;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Отправка...';
-
       var normalizedPhone = '+7' + digits.slice(1);
 
-      // Build message
+      // === INSTANT: show success right away ===
+      form.style.display = 'none';
+      formSuccess.classList.add('show');
+
+      // === Build message text ===
       var text = '\u{1F514} Новая заявка с сайта!\n\n'
         + '\u{1F464} Имя: ' + name + '\n'
         + '\u{1F4F1} Телефон: ' + normalizedPhone + '\n'
         + '\u{1F4AC} Сообщение: ' + (message || 'Не указано');
 
-      // SEND via all available methods
-      sendToTelegram(text);
+      var payload = JSON.stringify({
+        chat_id: CHAT_ID,
+        text: text
+      });
 
-      // Show success immediately (don't wait for network)
-      form.style.display = 'none';
-      formSuccess.classList.add('show');
+      // === Send in background (fire-and-forget with auto-retry) ===
+      sendToTelegram(payload, 0);
     });
 
-    // ===== ACTIVE NAV HIGHLIGHT =====
+    // ===== ACTIVE NAV — throttled with rAF =====
     var sections = document.querySelectorAll('section[id]');
     var navLinks = document.querySelectorAll('nav a');
+    var navTicking = false;
     window.addEventListener('scroll', function() {
-      var current = '';
-      sections.forEach(function(section) {
-        if (scrollY >= section.offsetTop - 120) current = section.getAttribute('id');
-      });
-      navLinks.forEach(function(link) {
-        link.style.color = link.getAttribute('href') === '#' + current ? '#9b6b9e' : '';
-      });
+      if (!navTicking) {
+        navTicking = true;
+        requestAnimationFrame(function() {
+          var current = '';
+          for (var i = 0; i < sections.length; i++) {
+            if (scrollY >= sections[i].offsetTop - 120) current = sections[i].id;
+          }
+          for (var i = 0; i < navLinks.length; i++) {
+            navLinks[i].style.color = navLinks[i].getAttribute('href') === '#' + current ? '#9b6b9e' : '';
+          }
+          navTicking = false;
+        });
+      }
     }, { passive: true });
   </script>
 
